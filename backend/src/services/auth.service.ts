@@ -5,7 +5,7 @@ import { logger } from '../config/logger';
 
 export interface LoginCredentials {
   email: string;
-  password: string;
+  senha: string;
 }
 
 export interface AuthTokens {
@@ -23,7 +23,7 @@ export class AuthService {
    * Realiza login do usuário
    */
   async login(credentials: LoginCredentials): Promise<AuthTokens> {
-    const { email, password } = credentials;
+    const { email, senha } = credentials;
 
     // Busca usuário
     const user = await prisma.user.findUnique({
@@ -46,7 +46,7 @@ export class AuthService {
     }
 
     // Verifica senha
-    const passwordMatch = await comparePassword(password, user.password);
+    const passwordMatch = await comparePassword(senha, user.password);
 
     if (!passwordMatch) {
       throw new Error('Email ou senha incorretos');

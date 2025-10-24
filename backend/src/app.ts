@@ -7,6 +7,7 @@ import { errorMiddleware } from './middleware/error.middleware';
 
 // Importar rotas
 import authRoutes from './routes/auth.routes';
+import alunoRoutes from './routes/aluno.routes';
 
 export function createApp(): Application {
   const app = express();
@@ -34,8 +35,9 @@ export function createApp(): Application {
     });
   });
 
-  // Rotas API
-  app.use('/api/auth', authRoutes);
+  // Rotas API v1
+  app.use('/api/v1/auth', authRoutes);
+  app.use('/api/v1/alunos', alunoRoutes);
 
   // Rota 404
   app.use((req, res) => {

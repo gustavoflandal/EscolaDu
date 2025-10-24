@@ -6,7 +6,7 @@ export const loginSchema = Joi.object({
     'string.email': 'Email inválido',
     'any.required': 'Email é obrigatório',
   }),
-  password: Joi.string().required().messages({
+  senha: Joi.string().required().messages({
     'any.required': 'Senha é obrigatória',
   }),
 });

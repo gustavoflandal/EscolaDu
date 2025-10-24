@@ -29,3 +29,6 @@ export function validation(schema: Schema, property: 'body' | 'query' | 'params'
     next();
   };
 }
+
+// Alias para compatibilidade
+export const validate = validation;

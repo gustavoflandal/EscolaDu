@@ -36,6 +36,9 @@ export function successResponse<T>(
   return res.status(statusCode).json(response);
 }
 
+// Alias para compatibilidade
+export const sendSuccess = successResponse;
+
 /**
  * Resposta de erro
  */
