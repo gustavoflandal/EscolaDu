@@ -1,0 +1,598 @@
+// SGE - Sistema de Gerenciamento Escolar
+// Prisma Schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextIndex"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ========================================
+// MÓDULO: SEGURANÇA E USUÁRIOS
+// ========================================
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  cpf       String?  @unique
+  phone     String?
+  avatar    String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relacionamentos
+  roles                    UserRole[]
+  auditLogs                AuditLog[]
+  avaliacoesRealizadas     AvaliacaoObjetivo[]
+  comunicadosPublicados    Comunicado[]
+  planosRecuperacao        PlanoRecuperacao[]
+  registrosFrequencia      RegistroFrequencia[]
+  alunoAsResponsavel       Aluno[]                 @relation("ResponsavelPrincipal")
+  
+  // Perfis específicos
+  professor                Professor?
+  responsavel              Responsavel?
+
+  @@index([email])
+  @@index([active])
+  @@map("users")
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relacionamentos
+  users       UserRole[]
+  permissions RolePermission[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String   @id @default(uuid())
+  resource    String   // 'alunos', 'turmas', 'frequencia', etc.
+  action      String   // 'create', 'read', 'update', 'delete'
+  description String?
+  createdAt   DateTime @default(now())
+
+  // Relacionamentos
+  roles RolePermission[]
+
+  @@unique([resource, action])
+  @@map("permissions")
+}
+
+model UserRole {
+  userId    String
+  roleId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+  createdAt    DateTime @default(now())
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  userId      String?
+  action      String   // CREATE, UPDATE, DELETE, LOGIN, LOGOUT
+  entity      String   // 'Aluno', 'Turma', 'Frequencia', etc.
+  entityId    String?
+  oldValue    Json?
+  newValue    Json?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([entity, entityId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+// ========================================
+// MÓDULO: CADASTROS BASE
+// ========================================
+
+model Aluno {
+  id                    String    @id @default(uuid())
+  matricula             String    @unique
+  nome                  String
+  cpf                   String?   @unique
+  rg                    String?
+  dataNascimento        DateTime
+  genero                String?   // 'M', 'F', 'Outro'
+  foto                  String?
+  endereco              String?
+  telefone              String?
+  email                 String?
+  necessidadesEspeciais String?
+  restricoesMedicas     String?
+  status                String    @default("ATIVO") // ATIVO, INATIVO, TRANSFERIDO, EVADIDO
+  active                Boolean   @default(true)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  
+  // Dados de anonimização (LGPD)
+  anonimizado           Boolean   @default(false)
+  dataAnonimizacao      DateTime?
+
+  // Relacionamentos
+  responsavelPrincipalId String?
+  responsavelPrincipal   User?                  @relation("ResponsavelPrincipal", fields: [responsavelPrincipalId], references: [id], onDelete: SetNull)
+  responsaveis           VinculoResponsabilidade[]
+  matriculas             Matricula[]
+  frequencias            RegistroFrequencia[]
+  avaliacoes             AvaliacaoObjetivo[]
+  planosRecuperacao      PlanoRecuperacao[]
+  evidencias             EvidenciaAprendizagem[]
+  comunicadosLeitura     ComunicadoLeitura[]
+  notificacoes           Notificacao[]
+
+  @@index([matricula])
+  @@index([status])
+  @@index([active])
+  @@fulltext([nome])
+  @@map("alunos")
+}
+
+model Responsavel {
+  id                  String   @id @default(uuid())
+  userId              String   @unique
+  cpf                 String   @unique
+  rg                  String?
+  telefonePrincipal   String
+  telefoneSecundario  String?
+  email               String
+  profissao           String?
+  endereco            String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  user     User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vinculos VinculoResponsabilidade[]
+
+  @@map("responsaveis")
+}
+
+model VinculoResponsabilidade {
+  id              String   @id @default(uuid())
+  alunoId         String
+  responsavelId   String
+  tipoVinculo     String   // PAI, MAE, AVO, TUTOR, OUTRO
+  prioridadeContato Int    @default(1)
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+
+  aluno       Aluno       @relation(fields: [alunoId], references: [id], onDelete: Cascade)
+  responsavel Responsavel @relation(fields: [responsavelId], references: [id], onDelete: Cascade)
+
+  @@unique([alunoId, responsavelId])
+  @@map("vinculo_responsabilidade")
+}
+
+model Professor {
+  id                    String   @id @default(uuid())
+  userId                String   @unique
+  registroProfissional  String?
+  formacao              String?
+  cargaHoraria          Int?
+  active                Boolean  @default(true)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  turmasRegente    Turma[]       @relation("ProfessorRegente")
+  disciplinas      TurmaDisciplina[]
+
+  @@map("professores")
+}
+
+model AnoLetivo {
+  id          String   @id @default(uuid())
+  ano         Int      @unique
+  dataInicio  DateTime
+  dataFim     DateTime
+  divisao     String   @default("TRIMESTRE") // BIMESTRE, TRIMESTRE, SEMESTRE
+  status      String   @default("PLANEJAMENTO") // PLANEJAMENTO, EM_ANDAMENTO, ENCERRADO
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  turmas    Turma[]
+  periodos  PeriodoLetivo[]
+
+  @@map("ano_letivo")
+}
+
+model PeriodoLetivo {
+  id          String   @id @default(uuid())
+  anoLetivoId String
+  numero      Int      // 1, 2, 3, 4
+  nome        String   // "1º Trimestre", "2º Bimestre", etc.
+  dataInicio  DateTime
+  dataFim     DateTime
+  createdAt   DateTime @default(now())
+
+  anoLetivo AnoLetivo @relation(fields: [anoLetivoId], references: [id], onDelete: Cascade)
+
+  @@unique([anoLetivoId, numero])
+  @@map("periodo_letivo")
+}
+
+model Turma {
+  id                  String   @id @default(uuid())
+  codigo              String   @unique
+  nome                String
+  anoLetivoId         String
+  serie               String   // "1º Ano", "2º Ano", etc.
+  turno               String   // MANHA, TARDE, NOITE, INTEGRAL
+  capacidadeMaxima    Int      @default(30)
+  sala                String?
+  professorRegenteId  String?
+  active              Boolean  @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  anoLetivo         AnoLetivo           @relation(fields: [anoLetivoId], references: [id])
+  professorRegente  Professor?          @relation("ProfessorRegente", fields: [professorRegenteId], references: [id], onDelete: SetNull)
+  matriculas        Matricula[]
+  disciplinas       TurmaDisciplina[]
+  aulas             Aula[]
+  avaliacoes        AvaliacaoObjetivo[]
+  comunicados       Comunicado[]
+
+  @@index([codigo])
+  @@index([anoLetivoId])
+  @@map("turmas")
+}
+
+model Matricula {
+  id            String    @id @default(uuid())
+  alunoId       String
+  turmaId       String
+  dataMatricula DateTime  @default(now())
+  dataSaida     DateTime?
+  status        String    @default("ATIVO") // ATIVO, TRANSFERIDO, CONCLUIDO
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  aluno Aluno @relation(fields: [alunoId], references: [id], onDelete: Cascade)
+  turma Turma @relation(fields: [turmaId], references: [id], onDelete: Cascade)
+
+  @@unique([alunoId, turmaId])
+  @@index([alunoId])
+  @@index([turmaId])
+  @@map("matriculas")
+}
+
+model Disciplina {
+  id                   String   @id @default(uuid())
+  codigo               String   @unique
+  nome                 String
+  areaConhecimento     String?  // Linguagens, Matemática, Ciências, etc.
+  cargaHorariaSemanal  Int      @default(4)
+  descricao            String?
+  active               Boolean  @default(true)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  turmas               TurmaDisciplina[]
+  objetivos            ObjetivoAprendizagem[]
+
+  @@map("disciplinas")
+}
+
+model TurmaDisciplina {
+  id            String    @id @default(uuid())
+  turmaId       String
+  disciplinaId  String
+  professorId   String
+  diaSemana     Int?      // 1-7 (Segunda a Domingo)
+  horarioInicio String?   // "08:00"
+  horarioFim    String?   // "08:50"
+  createdAt     DateTime  @default(now())
+
+  turma      Turma      @relation(fields: [turmaId], references: [id], onDelete: Cascade)
+  disciplina Disciplina @relation(fields: [disciplinaId], references: [id], onDelete: Cascade)
+  professor  Professor  @relation(fields: [professorId], references: [id], onDelete: Cascade)
+  aulas      Aula[]
+
+  @@unique([turmaId, disciplinaId])
+  @@map("turma_disciplina")
+}
+
+// ========================================
+// MÓDULO: FREQUÊNCIA
+// ========================================
+
+model Aula {
+  id                 String   @id @default(uuid())
+  turmaDisciplinaId  String
+  turmaId            String
+  data               DateTime
+  horaInicio         String
+  horaFim            String
+  conteudo           String?
+  professorId        String?
+  status             String   @default("REALIZADA") // REALIZADA, CANCELADA, REPOSTA
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  turmaDisciplina TurmaDisciplina      @relation(fields: [turmaDisciplinaId], references: [id], onDelete: Cascade)
+  turma           Turma                @relation(fields: [turmaId], references: [id], onDelete: Cascade)
+  frequencias     RegistroFrequencia[]
+
+  @@index([turmaDisciplinaId])
+  @@index([data])
+  @@map("aulas")
+}
+
+model RegistroFrequencia {
+  id              String    @id @default(uuid())
+  aulaId          String
+  alunoId         String
+  status          String    // P (Presente), F (Falta), J (Justificada)
+  observacao      String?
+  justificativaId String?
+  registradoPor   String?
+  registradoEm    DateTime  @default(now())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  aula          Aula                 @relation(fields: [aulaId], references: [id], onDelete: Cascade)
+  aluno         Aluno                @relation(fields: [alunoId], references: [id], onDelete: Cascade)
+  justificativa JustificativaFalta?  @relation(fields: [justificativaId], references: [id], onDelete: SetNull)
+  registrador   User?                @relation(fields: [registradoPor], references: [id], onDelete: SetNull)
+
+  @@unique([aulaId, alunoId])
+  @@index([alunoId])
+  @@index([status])
+  @@map("registro_frequencia")
+}
+
+model JustificativaFalta {
+  id           String    @id @default(uuid())
+  alunoId      String
+  dataInicio   DateTime
+  dataFim      DateTime
+  motivo       String
+  documentoUrl String?
+  aprovada     Boolean   @default(false)
+  aprovadaPor  String?
+  aprovadaEm   DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  registros RegistroFrequencia[]
+
+  @@index([alunoId])
+  @@map("justificativa_falta")
+}
+
+// ========================================
+// MÓDULO: OBJETIVOS DE APRENDIZAGEM
+// ========================================
+
+model ObjetivoAprendizagem {
+  id           String   @id @default(uuid())
+  codigoBNCC   String   @unique
+  descricao    String   @db.Text
+  disciplinaId String
+  serie        String
+  periodo      String   // "1º Trimestre", "2º Bimestre", etc.
+  competencia  String?  @db.Text
+  habilidade   String?  @db.Text
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  disciplina Disciplina          @relation(fields: [disciplinaId], references: [id], onDelete: Cascade)
+  avaliacoes AvaliacaoObjetivo[]
+
+  @@index([codigoBNCC])
+  @@index([serie])
+  @@map("objetivo_aprendizagem")
+}
+
+model AvaliacaoObjetivo {
+  id            String    @id @default(uuid())
+  objetivoId    String
+  alunoId       String
+  turmaId       String
+  status        String    // A (Atingido), D (Em Desenvolvimento), N (Não Atingido), NA (Não Avaliado)
+  observacao    String?   @db.Text
+  avaliadoPor   String?
+  avaliadoEm    DateTime  @default(now())
+  revisado      Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  objetivo   ObjetivoAprendizagem    @relation(fields: [objetivoId], references: [id], onDelete: Cascade)
+  aluno      Aluno                   @relation(fields: [alunoId], references: [id], onDelete: Cascade)
+  turma      Turma                   @relation(fields: [turmaId], references: [id], onDelete: Cascade)
+  avaliador  User?                   @relation(fields: [avaliadoPor], references: [id], onDelete: SetNull)
+  evidencias EvidenciaAprendizagem[]
+
+  @@unique([objetivoId, alunoId, turmaId])
+  @@index([alunoId])
+  @@index([status])
+  @@map("avaliacao_objetivo")
+}
+
+model EvidenciaAprendizagem {
+  id                  String   @id @default(uuid())
+  avaliacaoObjetivoId String
+  alunoId             String
+  tipo                String   // FOTO, VIDEO, DOCUMENTO, TEXTO, ATIVIDADE, PROJETO
+  arquivoUrl          String?
+  descricao           String?  @db.Text
+  createdAt           DateTime @default(now())
+
+  avaliacao AvaliacaoObjetivo @relation(fields: [avaliacaoObjetivoId], references: [id], onDelete: Cascade)
+  aluno     Aluno              @relation(fields: [alunoId], references: [id], onDelete: Cascade)
+
+  @@index([avaliacaoObjetivoId])
+  @@map("evidencia_aprendizagem")
+}
+
+// ========================================
+// MÓDULO: RECUPERAÇÃO E REFORÇO
+// ========================================
+
+model PlanoRecuperacao {
+  id              String   @id @default(uuid())
+  alunoId         String
+  tipo            String   // FREQUENCIA, DESEMPENHO, AMBOS
+  dataInicio      DateTime
+  dataFim         DateTime
+  diagnostico     String   @db.Text
+  objetivos       String   @db.Text
+  acoesPrevistas  String   @db.Text
+  responsavelId   String
+  status          String   @default("EM_ANDAMENTO") // EM_ANDAMENTO, CONCLUIDO, CANCELADO
+  resultado       String?  @db.Text
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  aluno        Aluno                         @relation(fields: [alunoId], references: [id], onDelete: Cascade)
+  responsavel  User                          @relation(fields: [responsavelId], references: [id], onDelete: Cascade)
+  acompanhamentos RecuperacaoAcompanhamento[]
+
+  @@index([alunoId])
+  @@index([status])
+  @@map("plano_recuperacao")
+}
+
+model RecuperacaoAcompanhamento {
+  id             String   @id @default(uuid())
+  planoId        String
+  data           DateTime
+  observacao     String   @db.Text
+  progresso      String   // INSATISFATORIO, REGULAR, BOM, OTIMO
+  registradoPor  String
+  registradoEm   DateTime @default(now())
+
+  plano PlanoRecuperacao @relation(fields: [planoId], references: [id], onDelete: Cascade)
+
+  @@index([planoId])
+  @@map("recuperacao_acompanhamento")
+}
+
+// ========================================
+// MÓDULO: COMUNICAÇÃO
+// ========================================
+
+model Comunicado {
+  id                  String    @id @default(uuid())
+  tipo                String    // AVISO, EVENTO, DOCUMENTO, URGENTE
+  titulo              String
+  conteudo            String    @db.Text
+  destinatarioTipo    String    // ESCOLA, SERIE, TURMA, ALUNO
+  destinatarioId      String?
+  turmaId             String?
+  arquivoUrl          String?
+  requerConfirmacao   Boolean   @default(false)
+  publicadoPor        String
+  publicadoEm         DateTime  @default(now())
+  expiraEm            DateTime?
+  createdAt           DateTime  @default(now())
+
+  turma     Turma?              @relation(fields: [turmaId], references: [id], onDelete: SetNull)
+  publicador User              @relation(fields: [publicadoPor], references: [id], onDelete: Cascade)
+  leituras  ComunicadoLeitura[]
+
+  @@index([tipo])
+  @@index([publicadoEm])
+  @@map("comunicados")
+}
+
+model ComunicadoLeitura {
+  comunicadoId String
+  alunoId      String
+  lidoEm       DateTime @default(now())
+
+  comunicado Comunicado @relation(fields: [comunicadoId], references: [id], onDelete: Cascade)
+  aluno      Aluno      @relation(fields: [alunoId], references: [id], onDelete: Cascade)
+
+  @@id([comunicadoId, alunoId])
+  @@map("comunicado_leitura")
+}
+
+// ========================================
+// MÓDULO: SISTEMA
+// ========================================
+
+model Notificacao {
+  id            String    @id @default(uuid())
+  destinatarioId String?
+  alunoId       String?
+  tipo          String    // FREQUENCIA, DESEMPENHO, COMUNICADO, SISTEMA
+  titulo        String
+  mensagem      String    @db.Text
+  lida          Boolean   @default(false)
+  enviadaPor    String?
+  criadaEm      DateTime  @default(now())
+  lidaEm        DateTime?
+
+  aluno Aluno? @relation(fields: [alunoId], references: [id], onDelete: Cascade)
+
+  @@index([alunoId])
+  @@index([lida])
+  @@index([criadaEm])
+  @@map("notificacoes")
+}
+
+model ConfiguracaoEscola {
+  id          String   @id @default(uuid())
+  chave       String   @unique
+  valor       String   @db.Text
+  tipo        String   @default("STRING") // STRING, NUMBER, BOOLEAN, JSON
+  descricao   String?  @db.Text
+  editavel    Boolean  @default(true)
+  atualizadoEm DateTime @default(now()) @updatedAt
+
+  @@map("configuracao_escola")
+}
+
+model TermoConsentimento {
+  id                 String    @id @default(uuid())
+  usuarioId          String
+  tipoTermo          String    // USO_DADOS, USO_IMAGEM, COMUNICACAO
+  versao             String
+  consentiu          Boolean
+  dataConsentimento  DateTime  @default(now())
+  ipAddress          String?
+  revogado           Boolean   @default(false)
+  dataRevogacao      DateTime?
+
+  @@index([usuarioId])
+  @@map("termo_consentimento")
+}
