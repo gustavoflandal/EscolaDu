@@ -72,21 +72,31 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
+import { dashboardService, type DashboardStats } from '@/services/dashboard.service'
+import { useToast } from 'vue-toastification'
 
-const stats = ref({
+const toast = useToast()
+const stats = ref<DashboardStats>({
   totalAlunos: 0,
   totalTurmas: 0,
   frequenciaMedia: 0,
   desempenhoMedio: 0
 })
+const loading = ref(false)
 
-onMounted(async () => {
-  // TODO: Carregar estatísticas da API
-  stats.value = {
-    totalAlunos: 150,
-    totalTurmas: 12,
-    frequenciaMedia: 87,
-    desempenhoMedio: 82
+async function loadStats() {
+  loading.value = true
+  try {
+    stats.value = await dashboardService.getStats()
+  } catch (error) {
+    console.error('Erro ao carregar estatísticas:', error)
+    toast.error('Erro ao carregar estatísticas do dashboard')
+  } finally {
+    loading.value = false
   }
+}
+
+onMounted(() => {
+  loadStats()
 })
 </script>

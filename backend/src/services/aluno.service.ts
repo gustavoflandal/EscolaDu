@@ -78,6 +78,7 @@ export class AlunoService {
           genero: true,
           foto: true,
           status: true,
+          active: true,
           createdAt: true,
           responsavelPrincipal: {
             select: {

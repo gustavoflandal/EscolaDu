@@ -80,6 +80,18 @@ Após executar o seed do banco de dados, use estas credenciais:
 - **Email**: admin@sge.com
 - **Senha**: Admin@2024
 
+> **💡 Problemas com login?**  
+> Se você receber erro 429 ou outros problemas de autenticação, consulte o guia [`TROUBLESHOOTING.md`](./TROUBLESHOOTING.md) para soluções detalhadas.
+
+## 🔧 Correções Recentes
+
+Veja o arquivo [`CHANGELOG_FIXES.md`](./CHANGELOG_FIXES.md) para detalhes sobre as correções mais recentes, incluindo:
+
+- ✅ Corrigido erro 429 (Too Many Requests) no login
+- ✅ Implementado controle de concorrência para refresh tokens
+- ✅ Corrigido desalinhamento de campos no fluxo de autenticação
+- ✅ Adicionada proteção contra múltiplos cliques no login
+
 ## 📚 Módulos do Sistema
 
 ### ✅ Módulos Implementados
@@ -368,5 +380,5 @@ MIT License - veja o arquivo LICENSE para detalhes
 ---
 
 **Última atualização**: 24 de outubro de 2025  
-**Versão**: 1.0.0  
-**Status**: MVP Completo ✅
+**Versão**: 1.0.1  
+**Status**: MVP Completo ✅ | Correções Aplicadas ✅

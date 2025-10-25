@@ -104,6 +104,20 @@
               placeholder="Rua, número"
             />
           </div>
+
+          <div class="sm:col-span-2">
+            <label class="flex items-center">
+              <input
+                v-model="form.active"
+                type="checkbox"
+                class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+              />
+              <span class="ml-2 text-sm font-medium text-gray-700">Aluno ativo</span>
+            </label>
+            <p class="text-xs text-gray-500 mt-1 ml-6">
+              Desmarque para desativar o aluno (não aparecerá em listagens ativas)
+            </p>
+          </div>
         </div>
 
         <div class="flex justify-end gap-4">
@@ -140,7 +154,8 @@ const form = ref({
   sexo: '',
   telefone: '',
   email: '',
-  endereco: ''
+  endereco: '',
+  active: true,
 })
 
 async function loadAluno() {
@@ -156,7 +171,8 @@ async function loadAluno() {
       sexo: aluno.sexo,
       telefone: aluno.telefone || '',
       email: aluno.email || '',
-      endereco: aluno.endereco || ''
+      endereco: aluno.endereco || '',
+      active: aluno.active !== false, // Default true se não vier
     }
   } catch (error) {
     toast.error('Erro ao carregar aluno')

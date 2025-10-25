@@ -14,13 +14,22 @@ export const useAuthStore = defineStore('auth', () => {
   async function login(credentials: LoginRequest) {
     loading.value = true
     try {
+      console.log('💾 Store: Iniciando login...')
       const response = await authService.login(credentials)
+      console.log('💾 Store: Resposta recebida', response)
+      
       token.value = response.accessToken
       refreshTokenValue.value = response.refreshToken
       user.value = response.user
 
       localStorage.setItem('token', response.accessToken)
       localStorage.setItem('refreshToken', response.refreshToken)
+      
+      console.log('✅ Store: Login completo', {
+        hasToken: !!token.value,
+        hasUser: !!user.value,
+        isAuthenticated: isAuthenticated.value
+      })
 
       return response
     } finally {
@@ -65,8 +74,11 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   // Carregar usuário na inicialização se houver token
+  // Usar setTimeout para evitar múltiplas requisições simultâneas
   if (token.value) {
-    fetchUser()
+    setTimeout(() => {
+      fetchUser()
+    }, 100)
   }
 
   return {

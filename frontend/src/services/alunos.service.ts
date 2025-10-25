@@ -10,23 +10,23 @@ export interface AlunosFilters {
 
 export const alunosService = {
   async list(filters: AlunosFilters = {}): Promise<PaginatedResponse<Aluno>> {
-    const { data } = await api.get<PaginatedResponse<Aluno>>('/alunos', { params: filters })
-    return data
+    const response = await api.get('/alunos', { params: filters })
+    return response.data.data
   },
 
   async getById(id: string): Promise<Aluno> {
-    const { data } = await api.get<Aluno>(`/alunos/${id}`)
-    return data
+    const response = await api.get(`/alunos/${id}`)
+    return response.data.data
   },
 
   async create(aluno: Partial<Aluno>): Promise<Aluno> {
-    const { data } = await api.post<Aluno>('/alunos', aluno)
-    return data
+    const response = await api.post('/alunos', aluno)
+    return response.data.data
   },
 
   async update(id: string, aluno: Partial<Aluno>): Promise<Aluno> {
-    const { data } = await api.put<Aluno>(`/alunos/${id}`, aluno)
-    return data
+    const response = await api.put(`/alunos/${id}`, aluno)
+    return response.data.data
   },
 
   async delete(id: string): Promise<void> {
@@ -34,7 +34,7 @@ export const alunosService = {
   },
 
   async getStats(id: string): Promise<AlunoStats> {
-    const { data } = await api.get<AlunoStats>(`/alunos/${id}/stats`)
-    return data
+    const response = await api.get(`/alunos/${id}/stats`)
+    return response.data.data
   }
 }

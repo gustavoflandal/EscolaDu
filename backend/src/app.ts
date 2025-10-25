@@ -8,6 +8,10 @@ import { errorMiddleware } from './middleware/error.middleware';
 // Importar rotas
 import authRoutes from './routes/auth.routes';
 import alunoRoutes from './routes/aluno.routes';
+import dashboardRoutes from './routes/dashboard.routes';
+import responsavelRoutes from './routes/responsavel.routes';
+import professorRoutes from './routes/professor.routes';
+import turmaRoutes from './routes/turma.routes';
 
 export function createApp(): Application {
   const app = express();
@@ -38,6 +42,10 @@ export function createApp(): Application {
   // Rotas API v1
   app.use('/api/v1/auth', authRoutes);
   app.use('/api/v1/alunos', alunoRoutes);
+  app.use('/api/v1/dashboard', dashboardRoutes);
+  app.use('/api/v1/responsaveis', responsavelRoutes);
+  app.use('/api/v1/professores', professorRoutes);
+  app.use('/api/v1/turmas', turmaRoutes);
 
   // Rota 404
   app.use((req, res) => {

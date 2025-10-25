@@ -70,13 +70,27 @@ const credentials = ref({
 const loading = ref(false)
 
 async function handleLogin() {
+  if (loading.value) return // Previne múltiplos cliques
+  
   loading.value = true
   try {
+    console.log('🔑 Tentando fazer login...')
     await authStore.login(credentials.value)
+    console.log('✅ Login realizado com sucesso!', { 
+      user: authStore.user,
+      token: authStore.token?.substring(0, 20) + '...',
+      isAuthenticated: authStore.isAuthenticated 
+    })
     toast.success('Login realizado com sucesso!')
-    router.push('/')
+    console.log('📤 Redirecionando para /')
+    await router.push('/')
+    console.log('✅ Redirecionamento concluído')
   } catch (error: any) {
-    toast.error(error.response?.data?.message || 'Erro ao fazer login')
+    console.error('❌ Erro no login:', error)
+    const errorMessage = error.response?.data?.error?.message || 
+                        error.response?.data?.message || 
+                        'Erro ao fazer login'
+    toast.error(errorMessage)
   } finally {
     loading.value = false
   }
