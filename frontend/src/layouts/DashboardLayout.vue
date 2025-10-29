@@ -3,9 +3,9 @@
     <!-- Header -->
     <header class="bg-white shadow-sm">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
+        <div class="flex justify-between h-20">
           <div class="flex items-center">
-            <h1 class="text-2xl font-bold text-primary-600">SGE - Sistema de Gerenciamento Escolar</h1>
+            <img src="/logo.png" alt="SGE - Sistema de Gestão Escolar" class="h-12 md:h-16 lg:h-20 object-contain" />
           </div>
           <div class="flex items-center space-x-4">
             <span class="text-sm text-gray-700 font-medium">{{ authStore.user?.name }}</span>
@@ -62,6 +62,23 @@
             active-class="border-primary-500 text-primary-600"
           >
             Relatórios
+          </RouterLink>
+          
+          <!-- Seção Administrativa - visível apenas para administradores -->
+          <div class="flex-1"></div>
+          <RouterLink
+            to="/usuarios"
+            class="border-transparent text-gray-600 hover:border-primary-400 hover:text-gray-900 inline-flex items-center px-1 border-b-2 text-sm font-medium transition-colors"
+            active-class="border-primary-500 text-primary-600"
+          >
+            Usuários
+          </RouterLink>
+          <RouterLink
+            to="/perfis"
+            class="border-transparent text-gray-600 hover:border-primary-400 hover:text-gray-900 inline-flex items-center px-1 border-b-2 text-sm font-medium transition-colors"
+            active-class="border-primary-500 text-primary-600"
+          >
+            Perfis
           </RouterLink>
         </div>
       </div>

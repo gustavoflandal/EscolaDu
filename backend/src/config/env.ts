@@ -1,5 +1,4 @@
 import { config } from 'dotenv';
-import path from 'path';
 
 // Carrega variáveis de ambiente
 config();

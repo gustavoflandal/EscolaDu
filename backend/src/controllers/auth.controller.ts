@@ -78,7 +78,7 @@ export class AuthController {
    * POST /api/auth/logout
    * Logout (client-side token removal)
    */
-  async logout(req: AuthRequest, res: Response): Promise<void> {
+  async logout(_req: AuthRequest, res: Response): Promise<void> {
     successResponse(res, null, 'Logout realizado com sucesso');
   }
 }

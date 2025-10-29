@@ -149,7 +149,17 @@ const toast = useToast()
 const isEdit = computed(() => !!route.params.id)
 const loading = ref(false)
 
-const form = ref({
+const form = ref<{
+  nome: string;
+  dataNascimento: string;
+  matricula: string;
+  cpf: string;
+  genero: 'M' | 'F' | 'Outro' | '';
+  telefone: string;
+  email: string;
+  endereco: string;
+  status: 'ATIVO' | 'INATIVO' | 'TRANSFERIDO' | 'EVADIDO' | 'CONCLUIDO';
+}>({
   nome: '',
   dataNascimento: '',
   matricula: '',
@@ -186,11 +196,16 @@ async function loadAluno() {
 async function handleSubmit() {
   loading.value = true
   try {
+    const data = {
+      ...form.value,
+      genero: form.value.genero || undefined
+    }
+    
     if (isEdit.value) {
-      await alunosService.update(route.params.id as string, form.value)
+      await alunosService.update(route.params.id as string, data)
       toast.success('Aluno atualizado com sucesso!')
     } else {
-      await alunosService.create(form.value)
+      await alunosService.create(data)
       toast.success('Aluno cadastrado com sucesso!')
     }
     router.push('/alunos')

@@ -187,3 +187,8 @@ export function requireRole(roleName: string) {
     }
   };
 }
+
+// Aliases para compatibilidade
+export const hasPermission = requirePermission;
+export const hasAnyPermission = requireAnyPermission;
+export const hasRole = requireRole;

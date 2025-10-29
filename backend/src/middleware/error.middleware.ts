@@ -11,7 +11,7 @@ export function errorMiddleware(
   error: Error,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): void {
   logger.error('Erro capturado:', {
     error: error.message,

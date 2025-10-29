@@ -2,8 +2,7 @@
   <div class="min-h-screen flex items-center justify-center bg-gray-100">
     <div class="card max-w-md w-full">
       <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">SGE</h1>
-        <p class="text-gray-600 mt-2">Sistema de Gerenciamento Escolar</p>
+        <img src="/logo.png" alt="SGE - Sistema de Gestão Escolar" class="h-24 mx-auto" />
       </div>
 
       <form @submit.prevent="handleLogin" class="space-y-6">

@@ -64,6 +64,43 @@ const router = createRouter({
           path: '/perfil',
           name: 'perfil',
           component: () => import('@/views/auth/ProfileView.vue')
+        },
+        // Rotas de Usuários
+        {
+          path: '/usuarios',
+          name: 'usuarios',
+          component: () => import('@/views/usuarios/UsuariosListView.vue')
+        },
+        {
+          path: '/usuarios/novo',
+          name: 'usuario-novo',
+          component: () => import('@/views/usuarios/UsuarioFormView.vue')
+        },
+        {
+          path: '/usuarios/:id',
+          name: 'usuario-detalhes',
+          component: () => import('@/views/usuarios/UsuarioDetailView.vue')
+        },
+        {
+          path: '/usuarios/:id/editar',
+          name: 'usuario-editar',
+          component: () => import('@/views/usuarios/UsuarioFormView.vue')
+        },
+        // Rotas de Perfis (Roles)
+        {
+          path: '/perfis',
+          name: 'perfis',
+          component: () => import('@/views/perfis/PerfisListView.vue')
+        },
+        {
+          path: '/perfis/novo',
+          name: 'perfil-novo',
+          component: () => import('@/views/perfis/PerfilFormView.vue')
+        },
+        {
+          path: '/perfis/:id/editar',
+          name: 'perfil-editar',
+          component: () => import('@/views/perfis/PerfilFormView.vue')
         }
       ]
     }
