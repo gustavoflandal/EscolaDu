@@ -167,6 +167,7 @@ model Responsavel {
   userId              String   @unique
   cpf                 String   @unique
   rg                  String?
+  tipoVinculo         String   // PAI, MAE, AVO, TUTOR, OUTRO
   telefonePrincipal   String
   telefoneSecundario  String?
   email               String
@@ -182,13 +183,12 @@ model Responsavel {
 }
 
 model VinculoResponsabilidade {
-  id              String   @id @default(uuid())
-  alunoId         String
-  responsavelId   String
-  tipoVinculo     String   // PAI, MAE, AVO, TUTOR, OUTRO
-  prioridadeContato Int    @default(1)
-  active          Boolean  @default(true)
-  createdAt       DateTime @default(now())
+  id                String   @id @default(uuid())
+  alunoId           String
+  responsavelId     String
+  prioridadeContato Int      @default(1)
+  active            Boolean  @default(true)
+  createdAt         DateTime @default(now())
 
   aluno       Aluno       @relation(fields: [alunoId], references: [id], onDelete: Cascade)
   responsavel Responsavel @relation(fields: [responsavelId], references: [id], onDelete: Cascade)

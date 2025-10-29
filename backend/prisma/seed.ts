@@ -33,6 +33,25 @@ async function main() {
     
     // Relatórios
     { resource: 'relatorios', action: 'read', description: 'Visualizar relatórios' },
+    { resource: 'relatorios', action: 'export', description: 'Exportar relatórios' },
+    
+    // Usuários
+    { resource: 'users', action: 'create', description: 'Criar usuários' },
+    { resource: 'users', action: 'read', description: 'Visualizar usuários' },
+    { resource: 'users', action: 'update', description: 'Atualizar usuários' },
+    { resource: 'users', action: 'delete', description: 'Deletar usuários' },
+    
+    // Perfis (Roles)
+    { resource: 'roles', action: 'create', description: 'Criar perfis' },
+    { resource: 'roles', action: 'read', description: 'Visualizar perfis' },
+    { resource: 'roles', action: 'update', description: 'Atualizar perfis' },
+    { resource: 'roles', action: 'delete', description: 'Deletar perfis' },
+    
+    // Responsáveis
+    { resource: 'responsaveis', action: 'create', description: 'Criar responsáveis' },
+    { resource: 'responsaveis', action: 'read', description: 'Visualizar responsáveis' },
+    { resource: 'responsaveis', action: 'update', description: 'Atualizar responsáveis' },
+    { resource: 'responsaveis', action: 'delete', description: 'Deletar responsáveis' },
   ];
 
   for (const perm of permissions) {

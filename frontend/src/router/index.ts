@@ -101,6 +101,27 @@ const router = createRouter({
           path: '/perfis/:id/editar',
           name: 'perfil-editar',
           component: () => import('@/views/perfis/PerfilFormView.vue')
+        },
+        // Rotas de Responsáveis
+        {
+          path: '/responsaveis',
+          name: 'responsaveis',
+          component: () => import('@/views/responsaveis/ResponsaveisListView.vue')
+        },
+        {
+          path: '/responsaveis/novo',
+          name: 'responsavel-novo',
+          component: () => import('@/views/responsaveis/ResponsavelFormView.vue')
+        },
+        {
+          path: '/responsaveis/:id',
+          name: 'responsavel-detalhes',
+          component: () => import('@/views/responsaveis/ResponsavelDetailView.vue')
+        },
+        {
+          path: '/responsaveis/:id/editar',
+          name: 'responsavel-editar',
+          component: () => import('@/views/responsaveis/ResponsavelFormView.vue')
         }
       ]
     }

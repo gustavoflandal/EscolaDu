@@ -10,6 +10,7 @@ import alunoRoutes from './routes/aluno.routes';
 import dashboardRoutes from './routes/dashboard.routes';
 import userRoutes from './routes/user.routes';
 import roleRoutes from './routes/role.routes';
+import responsavelRoutes from './routes/responsavel.routes';
 
 export function createApp(): Application {
   const app = express();
@@ -43,6 +44,7 @@ export function createApp(): Application {
   app.use('/api/v1/dashboard', dashboardRoutes);
   app.use('/api/v1/users', userRoutes);
   app.use('/api/v1/roles', roleRoutes);
+  app.use('/api/v1/responsaveis', responsavelRoutes);
 
   // Rota 404
   app.use((req, res) => {
