@@ -22,7 +22,7 @@ export const createAlunoSchema = Joi.object({
   email: Joi.string().email().optional().allow(null, ''),
   necessidadesEspeciais: Joi.string().optional().allow(null, ''),
   restricoesMedicas: Joi.string().optional().allow(null, ''),
-  status: Joi.string().valid('ATIVO', 'INATIVO', 'TRANSFERIDO', 'EVADIDO').default('ATIVO'),
+  status: Joi.string().valid('ATIVO', 'INATIVO', 'TRANSFERIDO', 'EVADIDO', 'CONCLUIDO').default('ATIVO'),
   responsavelPrincipalId: Joi.string().optional().allow(null),
 });
 
@@ -42,9 +42,8 @@ export const updateAlunoSchema = Joi.object({
   email: Joi.string().email().optional().allow(null, ''),
   necessidadesEspeciais: Joi.string().optional().allow(null, ''),
   restricoesMedicas: Joi.string().optional().allow(null, ''),
-  status: Joi.string().valid('ATIVO', 'INATIVO', 'TRANSFERIDO', 'EVADIDO').optional(),
+  status: Joi.string().valid('ATIVO', 'INATIVO', 'TRANSFERIDO', 'EVADIDO', 'CONCLUIDO').optional(),
   responsavelPrincipalId: Joi.string().optional().allow(null),
-  active: Joi.boolean().optional(),
 });
 
 // List Alunos Query

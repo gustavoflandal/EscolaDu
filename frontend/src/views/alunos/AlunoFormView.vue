@@ -61,7 +61,7 @@
             <label class="block text-sm font-medium text-gray-700 mb-2">
               Sexo *
             </label>
-            <select v-model="form.sexo" required class="input">
+            <select v-model="form.genero" required class="input">
               <option value="">Selecione</option>
               <option value="M">Masculino</option>
               <option value="F">Feminino</option>
@@ -104,6 +104,23 @@
               placeholder="Rua, número"
             />
           </div>
+
+          <!-- Status - Apenas em modo de edição -->
+          <div v-if="isEdit" class="sm:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Status *
+            </label>
+            <select v-model="form.status" required class="input">
+              <option value="ATIVO">Ativo</option>
+              <option value="INATIVO">Inativo</option>
+              <option value="TRANSFERIDO">Transferido</option>
+              <option value="EVADIDO">Evadido</option>
+              <option value="CONCLUIDO">Concluído</option>
+            </select>
+            <p class="mt-1 text-xs text-gray-500">
+              Status acadêmico atual do aluno
+            </p>
+          </div>
         </div>
 
         <div class="flex justify-end gap-4">
@@ -137,10 +154,11 @@ const form = ref({
   dataNascimento: '',
   matricula: '',
   cpf: '',
-  sexo: '',
+  genero: '',
   telefone: '',
   email: '',
-  endereco: ''
+  endereco: '',
+  status: 'ATIVO'
 })
 
 async function loadAluno() {
@@ -153,10 +171,11 @@ async function loadAluno() {
       dataNascimento: aluno.dataNascimento.split('T')[0],
       matricula: aluno.matricula,
       cpf: aluno.cpf || '',
-      sexo: aluno.sexo,
+      genero: aluno.genero || '',
       telefone: aluno.telefone || '',
       email: aluno.email || '',
-      endereco: aluno.endereco || ''
+      endereco: aluno.endereco || '',
+      status: aluno.status || 'ATIVO'
     }
   } catch (error) {
     toast.error('Erro ao carregar aluno')

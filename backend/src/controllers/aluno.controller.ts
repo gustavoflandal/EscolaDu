@@ -12,11 +12,11 @@ export class AlunoController {
 
   async list(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { search, active, page = '1', limit = '10' } = req.query;
+      const { search, status, page = '1', limit = '10' } = req.query;
 
       const filters = {
         search: search as string | undefined,
-        active: active === 'true' ? true : active === 'false' ? false : undefined,
+        status: status as string | undefined,
         page: parseInt(page as string, 10),
         limit: parseInt(limit as string, 10),
       };

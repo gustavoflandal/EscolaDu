@@ -18,9 +18,7 @@ export interface CreateAlunoData {
   responsavelPrincipalId?: string | null;
 }
 
-export interface UpdateAlunoData extends Partial<CreateAlunoData> {
-  active?: boolean;
-}
+export interface UpdateAlunoData extends Partial<CreateAlunoData> {}
 
 export interface ListAlunosFilters {
   page?: number;
@@ -36,12 +34,12 @@ export class AlunoService {
    */
   async list(filters: ListAlunosFilters) {
     const page = filters.page || 1;
-    const limit = filters.limit || 20;
-    const skip = (page - 1) * limit;
+    // If limit is 0 or negative, return ALL matching records (no pagination)
+    const limit = typeof filters.limit === 'number' ? filters.limit : 20;
+    const isPaginated = limit > 0;
+    const skip = isPaginated ? (page - 1) * limit : undefined;
 
-    const where: any = {
-      active: true,
-    };
+    const where: any = {};
 
     if (filters.status) {
       where.status = filters.status;
@@ -67,8 +65,8 @@ export class AlunoService {
     const [alunos, total] = await Promise.all([
       prisma.aluno.findMany({
         where,
-        skip,
-        take: limit,
+        ...(isPaginated ? { skip } : {}),
+        ...(isPaginated ? { take: limit } : {}),
         select: {
           id: true,
           matricula: true,
@@ -92,6 +90,19 @@ export class AlunoService {
       }),
       prisma.aluno.count({ where }),
     ]);
+
+    // If not paginated, return all records and normalize meta
+    if (!isPaginated) {
+      return {
+        data: alunos,
+        meta: {
+          page: 1,
+          limit: total,
+          total,
+          totalPages: 1,
+        },
+      };
+    }
 
     return {
       data: alunos,
@@ -271,7 +282,7 @@ export class AlunoService {
 
     await prisma.aluno.update({
       where: { id },
-      data: { active: false },
+      data: { status: 'INATIVO' },
     });
 
     logger.info(`Aluno inativado: ${aluno.nome} (${aluno.matricula})`);

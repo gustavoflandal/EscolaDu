@@ -40,7 +40,7 @@ export interface Aluno {
   cpf?: string
   rg?: string
   matricula: string
-  sexo: 'M' | 'F' | 'Outro'
+  genero?: 'M' | 'F' | 'Outro'
   telefone?: string
   email?: string
   endereco?: string
@@ -49,7 +49,7 @@ export interface Aluno {
   estado?: string
   cep?: string
   necessidadesEspeciais?: string
-  active: boolean
+  status: 'ATIVO' | 'INATIVO' | 'TRANSFERIDO' | 'EVADIDO' | 'CONCLUIDO'
   createdAt: string
   updatedAt: string
 }
