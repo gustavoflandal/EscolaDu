@@ -71,7 +71,7 @@ export class DashboardService {
 
     // Total de alunos ativos
     const totalAlunos = await prisma.aluno.count({
-      where: { active: true, status: 'ATIVO' },
+      where: { status: 'ATIVO' },
     });
 
     // Total de turmas ativas
@@ -214,7 +214,7 @@ export class DashboardService {
    */
   private async getAlunosComFrequenciaBaixa() {
     const alunos = await prisma.aluno.findMany({
-      where: { active: true, status: 'ATIVO' },
+      where: { status: 'ATIVO' },
       include: {
         frequencias: true,
       },
@@ -222,7 +222,7 @@ export class DashboardService {
 
     const alunosComFrequenciaBaixa = alunos
       .map(aluno => {
-        const totalPresencas = aluno.frequencias.filter(f => f.status === 'P').length;
+        const totalPresencas = aluno.frequencias.filter((f: any) => f.status === 'P').length;
         const totalRegistros = aluno.frequencias.length;
         const percentual = totalRegistros > 0 
           ? (totalPresencas / totalRegistros) * 100 
@@ -246,7 +246,7 @@ export class DashboardService {
    */
   private async getAlunosComDesempenhoCritico() {
     const alunos = await prisma.aluno.findMany({
-      where: { active: true, status: 'ATIVO' },
+      where: { status: 'ATIVO' },
       include: {
         avaliacoes: true,
       },
@@ -254,13 +254,13 @@ export class DashboardService {
 
     const alunosComDesempenhoCritico = alunos
       .map(aluno => {
-        const totalAtingidos = aluno.avaliacoes.filter(a => a.status === 'A').length;
+        const totalAtingidos = aluno.avaliacoes.filter((a: any) => a.status === 'A').length;
         const totalAvaliacoes = aluno.avaliacoes.length;
         const percentual = totalAvaliacoes > 0 
           ? (totalAtingidos / totalAvaliacoes) * 100 
           : 100;
 
-        const objetivosNaoAtingidos = aluno.avaliacoes.filter(a => a.status === 'N').length;
+        const objetivosNaoAtingidos = aluno.avaliacoes.filter((a: any) => a.status === 'N').length;
 
         return {
           alunoId: aluno.id,

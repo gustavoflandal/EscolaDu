@@ -91,6 +91,20 @@ async function main() {
     { resource: 'objetivos', action: 'read', description: 'Visualizar objetivos' },
     { resource: 'objetivos', action: 'update', description: 'Avaliar objetivos' },
     { resource: 'relatorios', action: 'read', description: 'Visualizar relatórios' },
+    { resource: 'relatorios', action: 'export', description: 'Exportar relatórios' },
+    { resource: 'users', action: 'create', description: 'Criar usuários' },
+    { resource: 'users', action: 'read', description: 'Visualizar usuários' },
+    { resource: 'users', action: 'update', description: 'Atualizar usuários' },
+    { resource: 'users', action: 'delete', description: 'Deletar usuários' },
+    { resource: 'roles', action: 'create', description: 'Criar perfis' },
+    { resource: 'roles', action: 'read', description: 'Visualizar perfis' },
+    { resource: 'roles', action: 'update', description: 'Atualizar perfis' },
+    { resource: 'roles', action: 'delete', description: 'Deletar perfis' },
+    { resource: 'permissions', action: 'read', description: 'Visualizar permissões' },
+    { resource: 'responsaveis', action: 'create', description: 'Criar responsáveis' },
+    { resource: 'responsaveis', action: 'read', description: 'Visualizar responsáveis' },
+    { resource: 'responsaveis', action: 'update', description: 'Atualizar responsáveis' },
+    { resource: 'responsaveis', action: 'delete', description: 'Deletar responsáveis' },
   ];
 
   for (const perm of permissions) {
@@ -335,10 +349,13 @@ async function main() {
         data: { userId: userResp.id, roleId: responsavelRole.id },
       });
 
+      const tipoVinculo = randomItem(['PAI', 'MAE', 'AVO', 'TUTOR', 'OUTRO']);
+      
       const responsavel = await prisma.responsavel.create({
         data: {
           userId: userResp.id,
           cpf: userResp.cpf!,
+          tipoVinculo,
           telefonePrincipal: userResp.phone!,
           email: emailResp,
           endereco: `${randomItem(ruas)}, ${randomInt(10, 999)}`,
@@ -368,7 +385,6 @@ async function main() {
         data: {
           alunoId: aluno.id,
           responsavelId: responsavel.id,
-          tipoVinculo: randomItem(['PAI', 'MAE', 'AVO', 'TUTOR']),
           prioridadeContato: 1,
         },
       });

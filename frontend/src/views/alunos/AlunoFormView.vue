@@ -1,8 +1,13 @@
 <template>
   <div>
-    <h1 class="text-3xl font-bold text-gray-900 mb-8">
-      {{ isEdit ? 'Editar Aluno' : 'Novo Aluno' }}
-    </h1>
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold text-gray-900">
+        {{ isEdit ? 'Editar Aluno' : 'Novo Aluno' }}
+      </h1>
+      <button @click="$router.back()" class="btn btn-secondary">
+        ← Voltar
+      </button>
+    </div>
 
     <div class="card max-w-2xl">
       <form @submit.prevent="handleSubmit" class="space-y-6">
