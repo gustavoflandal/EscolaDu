@@ -80,7 +80,7 @@
         <div class="card">
           <h2 class="text-xl font-semibold text-gray-900 mb-4">Bem-vindo!</h2>
           <p class="text-gray-600 mb-4">
-            Sistema de Gerenciamento Escolar - SGE
+            Sistema de Gestão Escolar
           </p>
           <p class="text-sm text-gray-500">
             Use o menu acima para navegar pelos diferentes módulos do sistema.

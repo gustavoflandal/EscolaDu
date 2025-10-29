@@ -14,7 +14,7 @@ export interface TokenPayload {
 export function generateAccessToken(payload: Omit<TokenPayload, 'iat' | 'exp'>): string {
   return jwt.sign(payload, env.jwtSecret, {
     expiresIn: env.jwtExpiresIn,
-  });
+  } as jwt.SignOptions);
 }
 
 /**
@@ -23,7 +23,7 @@ export function generateAccessToken(payload: Omit<TokenPayload, 'iat' | 'exp'>):
 export function generateRefreshToken(payload: Omit<TokenPayload, 'iat' | 'exp'>): string {
   return jwt.sign(payload, env.jwtRefreshSecret, {
     expiresIn: env.jwtRefreshExpiresIn,
-  });
+  } as jwt.SignOptions);
 }
 
 /**

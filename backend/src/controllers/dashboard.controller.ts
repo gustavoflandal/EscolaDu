@@ -8,7 +8,7 @@ export class DashboardController {
    * GET /api/dashboard/stats
    * Busca estatísticas gerais do sistema
    */
-  async getStats(req: Request, res: Response): Promise<void> {
+  async getStats(_req: Request, res: Response): Promise<void> {
     try {
       const stats = await dashboardService.getGeneralStats();
       successResponse(res, stats);
@@ -37,7 +37,7 @@ export class DashboardController {
    * GET /api/dashboard/alerts
    * Busca alertas do sistema
    */
-  async getAlerts(req: Request, res: Response): Promise<void> {
+  async getAlerts(_req: Request, res: Response): Promise<void> {
     try {
       const alerts = await dashboardService.getSystemAlerts();
       successResponse(res, alerts);

@@ -160,7 +160,7 @@ const pagination = ref({
 
 const viewAll = ref(false)
 
-let searchTimeout: NodeJS.Timeout
+let searchTimeout: ReturnType<typeof setTimeout> | undefined
 
 function handleSearch() {
   clearTimeout(searchTimeout)

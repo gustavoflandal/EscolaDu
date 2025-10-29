@@ -2,13 +2,14 @@ import express, { Application } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import { env } from './config/env';
-import { logger } from './config/logger';
 import { errorMiddleware } from './middleware/error.middleware';
 
 // Importar rotas
 import authRoutes from './routes/auth.routes';
 import alunoRoutes from './routes/aluno.routes';
 import dashboardRoutes from './routes/dashboard.routes';
+import userRoutes from './routes/user.routes';
+import roleRoutes from './routes/role.routes';
 
 export function createApp(): Application {
   const app = express();
@@ -27,7 +28,7 @@ export function createApp(): Application {
   app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
   // Health check
-  app.get('/health', (req, res) => {
+  app.get('/health', (_req, res) => {
     res.json({
       status: 'healthy',
       timestamp: new Date().toISOString(),
@@ -40,6 +41,8 @@ export function createApp(): Application {
   app.use('/api/v1/auth', authRoutes);
   app.use('/api/v1/alunos', alunoRoutes);
   app.use('/api/v1/dashboard', dashboardRoutes);
+  app.use('/api/v1/users', userRoutes);
+  app.use('/api/v1/roles', roleRoutes);
 
   // Rota 404
   app.use((req, res) => {
