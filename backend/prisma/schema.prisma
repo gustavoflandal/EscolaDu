@@ -136,8 +136,7 @@ model Aluno {
   email                 String?
   necessidadesEspeciais String?
   restricoesMedicas     String?
-  status                String    @default("ATIVO") // ATIVO, INATIVO, TRANSFERIDO, EVADIDO
-  active                Boolean   @default(true)
+  status                String    @default("ATIVO") // ATIVO, INATIVO, TRANSFERIDO, EVADIDO, CONCLUIDO
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
   
@@ -159,7 +158,6 @@ model Aluno {
 
   @@index([matricula])
   @@index([status])
-  @@index([active])
   @@fulltext([nome])
   @@map("alunos")
 }

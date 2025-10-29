@@ -71,15 +71,37 @@ const router = createRouter({
 })
 
 // Navigation guard
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth !== false)
 
-  if (requiresAuth && !authStore.isAuthenticated) {
-    next('/login')
+  // Se a rota requer autenticação
+  if (requiresAuth) {
+    // Se não tem token, redireciona para login
+    if (!authStore.token) {
+      next('/login')
+      return
+    }
+
+    // Se tem token mas não tem usuário carregado, tenta carregar
+    if (!authStore.user) {
+      try {
+        await authStore.fetchUser()
+        next()
+      } catch (error) {
+        // Se falhar ao carregar usuário, vai para login
+        next('/login')
+      }
+      return
+    }
+
+    // Tem token e usuário, pode prosseguir
+    next()
   } else if (to.path === '/login' && authStore.isAuthenticated) {
+    // Se está autenticado e tenta acessar login, vai para dashboard
     next('/')
   } else {
+    // Rota não requer autenticação
     next()
   }
 })

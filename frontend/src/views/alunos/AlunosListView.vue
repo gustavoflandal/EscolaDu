@@ -2,9 +2,14 @@
   <div>
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-3xl font-bold text-gray-900">Alunos</h1>
-      <RouterLink to="/alunos/novo" class="btn btn-primary">
-        Novo Aluno
-      </RouterLink>
+      <div class="flex items-center gap-3">
+        <RouterLink to="/" class="btn btn-secondary">
+          ← Voltar
+        </RouterLink>
+        <RouterLink to="/alunos/novo" class="btn btn-primary">
+          Novo Aluno
+        </RouterLink>
+      </div>
     </div>
 
     <div class="card mb-6">
@@ -16,10 +21,20 @@
           class="input flex-1"
           @input="handleSearch"
         />
-        <select v-model="filters.active" class="input w-48" @change="loadAlunos">
-          <option :value="undefined">Todos</option>
-          <option :value="true">Ativos</option>
-          <option :value="false">Inativos</option>
+        <select v-model="filters.status" class="input w-48" @change="loadAlunos">
+          <option value="">Todos</option>
+          <option value="ATIVO">Ativos</option>
+          <option value="INATIVO">Inativos</option>
+          <option value="TRANSFERIDO">Transferidos</option>
+          <option value="EVADIDO">Evadidos</option>
+          <option value="CONCLUIDO">Concluídos</option>
+        </select>
+        <select v-model.number="pagination.limit" class="input w-40" @change="onLimitChange">
+          <option :value="10">10 por página</option>
+          <option :value="25">25 por página</option>
+          <option :value="50">50 por página</option>
+          <option :value="100">100 por página</option>
+          <option :value="0">Todos</option>
         </select>
       </div>
     </div>
@@ -56,26 +71,26 @@
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
             <tr v-for="aluno in alunos" :key="aluno.id" class="hover:bg-gray-50">
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="px-6 py-2 whitespace-nowrap">
                 <div class="text-sm font-medium text-gray-900">{{ aluno.nome }}</div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="px-6 py-2 whitespace-nowrap">
                 <div class="text-sm text-gray-500">{{ aluno.matricula }}</div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="px-6 py-2 whitespace-nowrap">
                 <div class="text-sm text-gray-500">{{ formatDate(aluno.dataNascimento) }}</div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="px-6 py-2 whitespace-nowrap">
                 <span
                   :class="[
-                    'px-2 inline-flex text-xs leading-5 font-semibold rounded-full',
-                    aluno.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                    'px-2 inline-flex text-xs leading-4 font-semibold rounded-full',
+                    getStatusClass(aluno.status)
                   ]"
                 >
-                  {{ aluno.active ? 'Ativo' : 'Inativo' }}
+                  {{ getStatusLabel(aluno.status) }}
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+              <td class="px-6 py-2 whitespace-nowrap text-right text-sm font-medium space-x-2">
                 <RouterLink
                   :to="`/alunos/${aluno.id}`"
                   class="text-primary-600 hover:text-primary-900"
@@ -95,7 +110,7 @@
       </div>
 
       <!-- Pagination -->
-      <div v-if="pagination.totalPages > 1" class="mt-4 flex justify-between items-center">
+      <div v-if="pagination.totalPages > 1 && !viewAll" class="mt-4 flex justify-between items-center">
         <div class="text-sm text-gray-700">
           Mostrando {{ alunos.length }} de {{ pagination.total }} alunos
         </div>
@@ -116,6 +131,9 @@
           </button>
         </div>
       </div>
+      <div v-else class="mt-4 text-sm text-gray-700">
+        Mostrando {{ alunos.length }} de {{ pagination.total }} alunos
+      </div>
     </div>
   </div>
 </template>
@@ -131,7 +149,7 @@ const alunos = ref<Aluno[]>([])
 const loading = ref(false)
 const filters = ref({
   search: '',
-  active: undefined as boolean | undefined
+  status: '' as string
 })
 const pagination = ref({
   page: 1,
@@ -139,6 +157,8 @@ const pagination = ref({
   total: 0,
   totalPages: 0
 })
+
+const viewAll = ref(false)
 
 let searchTimeout: NodeJS.Timeout
 
@@ -149,6 +169,28 @@ function handleSearch() {
   }, 500)
 }
 
+function getStatusClass(status: string): string {
+  const classes: Record<string, string> = {
+    'ATIVO': 'bg-green-100 text-green-800',
+    'INATIVO': 'bg-gray-100 text-gray-800',
+    'TRANSFERIDO': 'bg-blue-100 text-blue-800',
+    'EVADIDO': 'bg-red-100 text-red-800',
+    'CONCLUIDO': 'bg-purple-100 text-purple-800'
+  }
+  return classes[status] || 'bg-gray-100 text-gray-800'
+}
+
+function getStatusLabel(status: string): string {
+  const labels: Record<string, string> = {
+    'ATIVO': 'Ativo',
+    'INATIVO': 'Inativo',
+    'TRANSFERIDO': 'Transferido',
+    'EVADIDO': 'Evadido',
+    'CONCLUIDO': 'Concluído'
+  }
+  return labels[status] || status
+}
+
 async function loadAlunos() {
   loading.value = true
   try {
@@ -157,12 +199,26 @@ async function loadAlunos() {
       page: pagination.value.page,
       limit: pagination.value.limit
     })
-    alunos.value = response.data
-    pagination.value = {
-      page: response.page,
-      limit: response.limit,
-      total: response.total,
-      totalPages: response.totalPages
+    // Backend may return pagination metadata in different shapes.
+    // Handle both: { data: [], page, limit, total, totalPages }
+    // and { data: [], meta: { page, limit, total, totalPages } }
+    if ((response as any).meta) {
+      alunos.value = (response as any).data || []
+      const meta = (response as any).meta
+      pagination.value = {
+        page: meta.page || 1,
+        limit: meta.limit ?? pagination.value.limit,
+        total: meta.total || 0,
+        totalPages: meta.totalPages || 0
+      }
+    } else {
+      alunos.value = (response as any).data || []
+      pagination.value = {
+        page: (response as any).page || 1,
+        limit: (response as any).limit ?? pagination.value.limit,
+        total: (response as any).total || 0,
+        totalPages: (response as any).totalPages || 0
+      }
     }
   } catch (error) {
     console.error('Erro ao carregar alunos:', error)
@@ -173,6 +229,13 @@ async function loadAlunos() {
 
 function goToPage(page: number) {
   pagination.value.page = page
+  loadAlunos()
+}
+
+function onLimitChange() {
+  // When limit changes, reset to first page and reload
+  pagination.value.page = 1
+  viewAll.value = pagination.value.limit === 0
   loadAlunos()
 }
 

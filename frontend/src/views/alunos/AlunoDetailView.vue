@@ -57,9 +57,9 @@
             <dt class="text-sm font-medium text-gray-500">CPF</dt>
             <dd class="mt-1 text-sm text-gray-900">{{ aluno.cpf }}</dd>
           </div>
-          <div>
+          <div v-if="aluno.genero">
             <dt class="text-sm font-medium text-gray-500">Sexo</dt>
-            <dd class="mt-1 text-sm text-gray-900">{{ aluno.sexo }}</dd>
+            <dd class="mt-1 text-sm text-gray-900">{{ formatGenero(aluno.genero) }}</dd>
           </div>
           <div v-if="aluno.telefone">
             <dt class="text-sm font-medium text-gray-500">Telefone</dt>
@@ -109,6 +109,15 @@ async function loadAluno() {
 
 function formatDate(date: string) {
   return format(new Date(date), 'dd/MM/yyyy')
+}
+
+function formatGenero(genero: string) {
+  const generos: Record<string, string> = {
+    'M': 'Masculino',
+    'F': 'Feminino',
+    'Outro': 'Outro'
+  }
+  return generos[genero] || genero
 }
 
 onMounted(() => {
