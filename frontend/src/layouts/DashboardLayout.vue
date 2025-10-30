@@ -36,6 +36,13 @@
             Alunos
           </RouterLink>
           <RouterLink
+            to="/responsaveis"
+            class="border-transparent text-gray-600 hover:border-primary-400 hover:text-gray-900 inline-flex items-center px-1 border-b-2 text-sm font-medium transition-colors"
+            active-class="border-primary-500 text-primary-600"
+          >
+            Responsáveis
+          </RouterLink>
+          <RouterLink
             to="/turmas"
             class="border-transparent text-gray-600 hover:border-primary-400 hover:text-gray-900 inline-flex items-center px-1 border-b-2 text-sm font-medium transition-colors"
             active-class="border-primary-500 text-primary-600"
@@ -79,13 +86,6 @@
             active-class="border-primary-500 text-primary-600"
           >
             Perfis
-          </RouterLink>
-          <RouterLink
-            to="/responsaveis"
-            class="border-transparent text-gray-600 hover:border-primary-400 hover:text-gray-900 inline-flex items-center px-1 border-b-2 text-sm font-medium transition-colors"
-            active-class="border-primary-500 text-primary-600"
-          >
-            Responsáveis
           </RouterLink>
         </div>
       </div>

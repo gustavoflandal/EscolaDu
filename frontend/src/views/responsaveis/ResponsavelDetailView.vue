@@ -129,36 +129,38 @@
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aluno</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Prioridade de Contato</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Ações</th>
+                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Aluno</th>
+                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Matrícula</th>
+                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Prioridade</th>
+                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                <th class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">Ação</th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-              <tr v-for="aluno in alunos" :key="aluno.alunoId">
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm font-medium text-gray-900">{{ aluno.nome }}</div>
-                  <div class="text-sm text-gray-500">Matrícula: {{ aluno.matricula }}</div>
+              <tr v-for="vinculo in alunos" :key="vinculo.vinculoId">
+                <td class="px-4 py-2 whitespace-nowrap">
+                  <div class="text-sm font-medium text-gray-900">{{ vinculo.aluno.nome }}</div>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {{ aluno.prioridadeContato }}
+                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                  {{ vinculo.aluno.matricula }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap">
+                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
+                  {{ vinculo.prioridadeContato }}
+                </td>
+                <td class="px-4 py-2 whitespace-nowrap">
                   <span
                     :class="[
                       'px-2 py-1 text-xs font-semibold rounded-full',
-                      aluno.status === 'ATIVO' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                      vinculo.aluno.status === 'ATIVO' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
                     ]"
                   >
-                    {{ aluno.status === 'ATIVO' ? 'Ativo' : 'Inativo' }}
+                    {{ vinculo.aluno.status === 'ATIVO' ? 'Ativo' : 'Inativo' }}
                   </span>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <td class="px-4 py-2 whitespace-nowrap text-right text-sm font-medium">
                   <button
-                    @click="confirmRemoveVinculo(aluno.vinculoId || '')"
+                    @click="confirmRemoveVinculo(vinculo.vinculoId)"
                     class="text-red-600 hover:text-red-900"
-                    :disabled="!aluno.vinculoId"
                   >
                     Remover
                   </button>

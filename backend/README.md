@@ -321,3 +321,11 @@ Desenvolvido por EscolaDu
 - [Express.js](https://expressjs.com/)
 - [TypeScript](https://www.typescriptlang.org/)
 - [Joi Validation](https://joi.dev/)
+
+
+## 🔗 Comandos Úteis
+## 🔗 Backup do banco de dados no Docker
+$env:MYSQL_PWD="root123" ; docker exec 3080828256ed0215942b17fb379c03327f072503b661043601700180416273d1 /usr/bin/mysqldump -u root --all-databases > e:/escoladu/backups/backup_completo_mysql.sql
+
+## 🔗 Restaurar o banco de dados
+$env:MYSQL_PWD="root123" ; cat e:/escoladu/backups/backup_completo_mysql.sql | docker exec -i 3080828256ed0215942b17fb379c03327f072503b661043601700180416273d1 /usr/bin/mysql -u root
