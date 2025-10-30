@@ -48,4 +48,12 @@ body {
   .card {
     @apply bg-white rounded-lg shadow-md p-6;
   }
+  
+  .checkbox {
+    @apply bg-white border border-blue-500 rounded-md text-blue-500 focus:ring-2 focus:ring-blue-500;
+  }
+  
+  .checkbox:checked {
+    @apply bg-blue-500 text-white;
+  }
 }

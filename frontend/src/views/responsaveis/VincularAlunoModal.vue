@@ -47,9 +47,6 @@
                     <thead class="bg-gray-50 sticky top-0">
                       <tr>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Selecionar
-                        </th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Nome
                         </th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -58,24 +55,17 @@
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Status
                         </th>
+                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Ações
+                        </th>
                       </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                       <tr
                         v-for="aluno in alunosEncontrados"
                         :key="aluno.id"
-                        @click="selectAluno(aluno)"
-                        class="hover:bg-gray-50 cursor-pointer transition-colors"
-                        :class="{ 'bg-primary-50': alunoSelecionado?.id === aluno.id }"
+                        class="hover:bg-gray-50 transition-colors"
                       >
-                        <td class="px-4 py-3 whitespace-nowrap">
-                          <input
-                            type="radio"
-                            :checked="alunoSelecionado?.id === aluno.id"
-                            class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
-                            @click.stop="selectAluno(aluno)"
-                          />
-                        </td>
                         <td class="px-4 py-3 whitespace-nowrap">
                           <div class="text-sm font-medium text-gray-900">{{ aluno.nome }}</div>
                         </td>
@@ -92,6 +82,16 @@
                             {{ aluno.status }}
                           </span>
                         </td>
+                        <td class="px-4 py-3 whitespace-nowrap text-center">
+                          <button
+                            type="button"
+                            @click="vincularAluno(aluno)"
+                            class="text-blue-600 hover:text-blue-800 font-medium text-sm"
+                            :disabled="submitting"
+                          >
+                            Vincular
+                          </button>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -103,29 +103,10 @@
               </div>
             </div>
 
-            <!-- Aluno Selecionado -->
-            <div v-if="alunoSelecionado" class="mb-4 p-4 bg-primary-50 rounded-lg border border-primary-200">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-sm font-medium text-gray-900 mb-1">Aluno Selecionado:</p>
-                  <p class="text-sm text-gray-700">{{ alunoSelecionado.nome }} - {{ alunoSelecionado.matricula }}</p>
-                </div>
-                <button
-                  type="button"
-                  @click="clearSelection"
-                  class="text-gray-400 hover:text-gray-600"
-                >
-                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
             <!-- Prioridade de Contato -->
             <div class="mb-4">
               <label class="block text-sm font-medium text-gray-700 mb-1">
-                Prioridade de Contato <span class="text-red-500">*</span>
+                Prioridade de Contato Padrão <span class="text-red-500">*</span>
               </label>
               <input
                 v-model.number="form.prioridadeContato"
@@ -138,21 +119,14 @@
               <p class="text-xs text-gray-500 mt-1">De 1 (mais prioritário) a 10 (menos prioritário)</p>
             </div>
 
-            <!-- Botões -->
-            <div class="flex justify-end gap-3 mt-6">
+            <!-- Botão Fechar -->
+            <div class="flex justify-end mt-6">
               <button
                 type="button"
                 @click="$emit('close')"
                 class="btn btn-secondary"
               >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                class="btn btn-primary"
-                :disabled="!alunoSelecionado || submitting"
-              >
-                {{ submitting ? 'Salvando...' : 'Vincular' }}
+                Fechar
               </button>
             </div>
           </form>
@@ -182,7 +156,6 @@ const emit = defineEmits<{
 const toast = useToast();
 const searchQuery = ref('');
 const alunosEncontrados = ref<Aluno[]>([]);
-const alunoSelecionado = ref<Aluno | null>(null);
 const submitting = ref(false);
 const loading = ref(false);
 
@@ -227,31 +200,19 @@ async function searchAlunos() {
   }, 500);
 }
 
-function selectAluno(aluno: Aluno) {
-  alunoSelecionado.value = aluno;
-}
-
-function clearSelection() {
-  alunoSelecionado.value = null;
-}
-
-async function handleSubmit() {
-  if (!alunoSelecionado.value) {
-    toast.error('Selecione um aluno');
-    return;
-  }
-
+async function vincularAluno(aluno: Aluno) {
   submitting.value = true;
 
   try {
     const data: CreateVinculoData = {
-      alunoId: alunoSelecionado.value.id,
+      alunoId: aluno.id,
       prioridadeContato: form.value.prioridadeContato
     };
 
     await responsaveisService.createVinculo(props.responsavelId, data);
-    toast.success('Vínculo criado com sucesso!');
+    toast.success(`Vínculo criado com ${aluno.nome}!`);
     emit('vinculoCriado');
+    emit('close');
   } catch (error: any) {
     toast.error(error.response?.data?.error?.message || 'Erro ao criar vínculo');
     console.error('Erro ao criar vínculo:', error);

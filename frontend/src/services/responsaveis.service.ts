@@ -21,15 +21,18 @@ export interface Responsavel {
 }
 
 export interface AlunoVinculo {
-  vinculoId?: string;
-  alunoId: string;
-  nome: string;
-  matricula: string;
-  status: string;
-  foto?: string;
-  dataNascimento?: string;
+  vinculoId: string;
   prioridadeContato: number;
-  createdAt?: string;
+  aluno: {
+    id: string;
+    matricula: string;
+    nome: string;
+    dataNascimento: string;
+    foto?: string;
+    status: string;
+    telefone?: string;
+    email?: string;
+  };
 }
 
 export interface CreateResponsavelData {
