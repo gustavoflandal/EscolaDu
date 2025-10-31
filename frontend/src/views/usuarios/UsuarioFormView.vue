@@ -1,12 +1,14 @@
 <template>
   <div>
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-bold text-gray-900">
-        {{ isEdit ? 'Editar Usuário' : 'Novo Usuário' }}
-      </h1>
-      <button @click="$router.back()" class="btn btn-secondary">
-        ← Voltar
-      </button>
+      <div class="flex items-center gap-3">
+        <button @click="$router.back()" class="btn btn-secondary">
+          Voltar
+        </button>
+        <h1 class="text-3xl font-bold text-gray-900">
+          {{ isEdit ? 'Editar Usuário' : 'Novo Usuário' }}
+        </h1>
+      </div>
     </div>
 
     <div class="card max-w-2xl">

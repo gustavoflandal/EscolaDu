@@ -1,23 +1,5 @@
 import api from './api';
-
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  cpf?: string;
-  phone?: string;
-  avatar?: string;
-  active: boolean;
-  roles: Role[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Role {
-  id: string;
-  name: string;
-  description?: string;
-}
+import type { User, Role } from '@/types';
 
 export interface CreateUserData {
   email: string;

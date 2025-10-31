@@ -11,6 +11,11 @@ import dashboardRoutes from './routes/dashboard.routes';
 import userRoutes from './routes/user.routes';
 import roleRoutes from './routes/role.routes';
 import responsavelRoutes from './routes/responsavel.routes';
+import professorRoutes from './routes/professor.routes';
+import turmaRoutes from './routes/turma.routes';
+import disciplinaRoutes from './routes/disciplina.routes';
+import programaEnsinoRoutes from './routes/programa-ensino.routes';
+import objetivoAprendizagemRoutes from './routes/objetivo-aprendizagem.routes';
 
 export function createApp(): Application {
   const app = express();
@@ -45,6 +50,11 @@ export function createApp(): Application {
   app.use('/api/v1/users', userRoutes);
   app.use('/api/v1/roles', roleRoutes);
   app.use('/api/v1/responsaveis', responsavelRoutes);
+  app.use('/api/v1/professores', professorRoutes);
+  app.use('/api/v1/turmas', turmaRoutes);
+  app.use('/api/v1/disciplinas', disciplinaRoutes);
+  app.use('/api/v1/programas-ensino', programaEnsinoRoutes);
+  app.use('/api/v1/objetivos-aprendizagem', objetivoAprendizagemRoutes);
 
   // Rota 404
   app.use((req, res) => {
