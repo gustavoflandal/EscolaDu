@@ -168,6 +168,13 @@
               </tr>
             </tbody>
           </table>
+          
+          <!-- Rodapé informativo -->
+          <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+            <p class="text-sm text-gray-700">
+              Total de <span class="font-medium">{{ alunos.length }}</span> aluno(s) vinculado(s)
+            </p>
+          </div>
         </div>
         <div v-else class="text-center py-6 text-gray-500">
           Nenhum aluno vinculado

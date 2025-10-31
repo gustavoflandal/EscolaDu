@@ -146,6 +146,18 @@ export class AuthService {
                 id: true,
                 name: true,
                 description: true,
+                permissions: {
+                  include: {
+                    permission: {
+                      select: {
+                        id: true,
+                        resource: true,
+                        action: true,
+                        description: true,
+                      },
+                    },
+                  },
+                },
               },
             },
           },
@@ -157,9 +169,27 @@ export class AuthService {
       throw new Error('Usuário não encontrado');
     }
 
+    // Mapeia roles e suas permissões
+    const rolesWithPermissions = user.roles.map((ur) => ({
+      ...ur.role,
+      permissions: ur.role.permissions.map((rp) => rp.permission),
+    }));
+
+    // Coleta todas as permissões únicas do usuário
+    const allPermissions = rolesWithPermissions.reduce((acc, role) => {
+      role.permissions.forEach((permission) => {
+        const key = `${permission.resource}:${permission.action}`;
+        if (!acc.some((p) => `${p.resource}:${p.action}` === key)) {
+          acc.push(permission);
+        }
+      });
+      return acc;
+    }, [] as any[]);
+
     return {
       ...user,
-      roles: user.roles.map((ur) => ur.role),
+      roles: rolesWithPermissions,
+      permissions: allPermissions,
     };
   }
 

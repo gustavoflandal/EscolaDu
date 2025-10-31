@@ -117,24 +117,36 @@
               </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <RouterLink
-                :to="`/usuarios/${user.id}`"
-                class="text-primary-600 hover:text-primary-900 mr-3"
-              >
-                Ver
-              </RouterLink>
-              <RouterLink
-                :to="`/usuarios/${user.id}/editar`"
-                class="text-indigo-600 hover:text-indigo-900 mr-3"
-              >
-                Editar
-              </RouterLink>
-              <button
-                @click="confirmDelete(user)"
-                class="text-red-600 hover:text-red-900"
-              >
-                Excluir
-              </button>
+              <div class="flex justify-end gap-2">
+                <RouterLink
+                  :to="`/usuarios/${user.id}`"
+                  class="text-blue-600 hover:text-blue-900"
+                  title="Visualizar"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                </RouterLink>
+                <RouterLink
+                  :to="`/usuarios/${user.id}/editar`"
+                  class="text-yellow-600 hover:text-yellow-900"
+                  title="Editar"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                </RouterLink>
+                <button
+                  @click="confirmDelete(user)"
+                  class="text-red-600 hover:text-red-900"
+                  title="Excluir"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -143,17 +155,11 @@
       <!-- Paginação -->
       <div v-if="pagination.totalPages > 1" class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
         <div class="flex items-center justify-between">
-          <div class="text-sm text-gray-700">
-            Mostrando {{ (pagination.page - 1) * pagination.limit + 1 }} até
-            {{ Math.min(pagination.page * pagination.limit, pagination.total) }} de
-            {{ pagination.total }} resultados
-          </div>
-          <div class="flex gap-2">
+          <div class="flex-1 flex justify-between sm:hidden">
             <button
               @click="changePage(pagination.page - 1)"
               :disabled="pagination.page === 1"
               class="btn btn-secondary"
-              :class="{ 'opacity-50 cursor-not-allowed': pagination.page === 1 }"
             >
               Anterior
             </button>
@@ -161,10 +167,42 @@
               @click="changePage(pagination.page + 1)"
               :disabled="pagination.page >= pagination.totalPages"
               class="btn btn-secondary"
-              :class="{ 'opacity-50 cursor-not-allowed': pagination.page >= pagination.totalPages }"
             >
               Próxima
             </button>
+          </div>
+          <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+            <div>
+              <p class="text-sm text-gray-700">
+                Mostrando
+                <span class="font-medium">{{ (pagination.page - 1) * pagination.limit + 1 }}</span>
+                até
+                <span class="font-medium">{{
+                  Math.min(pagination.page * pagination.limit, pagination.total)
+                }}</span>
+                de
+                <span class="font-medium">{{ pagination.total }}</span>
+                resultados
+              </p>
+            </div>
+            <div>
+              <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                <button
+                  @click="changePage(pagination.page - 1)"
+                  :disabled="pagination.page === 1"
+                  class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Anterior
+                </button>
+                <button
+                  @click="changePage(pagination.page + 1)"
+                  :disabled="pagination.page >= pagination.totalPages"
+                  class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Próxima
+                </button>
+              </nav>
+            </div>
           </div>
         </div>
       </div>

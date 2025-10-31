@@ -40,8 +40,16 @@ const RESOURCES = {
     name: 'Disciplinas',
     actions: ['create', 'read', 'update', 'delete'],
   },
+  'programas-ensino': {
+    name: 'Programas de Ensino',
+    actions: ['create', 'read', 'update', 'delete'],
+  },
   professores: {
     name: 'Professores',
+    actions: ['create', 'read', 'update', 'delete'],
+  },
+  responsaveis: {
+    name: 'Responsáveis',
     actions: ['create', 'read', 'update', 'delete'],
   },
 
@@ -119,10 +127,18 @@ const ROLES = {
       'disciplinas:read',
       'disciplinas:update',
       'disciplinas:delete',
+      'programas-ensino:create',
+      'programas-ensino:read',
+      'programas-ensino:update',
+      'programas-ensino:delete',
       'professores:create',
       'professores:read',
       'professores:update',
       'professores:delete',
+      'responsaveis:create',
+      'responsaveis:read',
+      'responsaveis:update',
+      'responsaveis:delete',
 
       // Acesso total às atividades pedagógicas
       'frequencia:create',
@@ -178,7 +194,9 @@ const ROLES = {
       // Leitura de turmas e disciplinas
       'turmas:read',
       'disciplinas:read',
+      'programas-ensino:read',
       'professores:read',
+      'responsaveis:read',
 
       // Atividades pedagógicas (criar, ler, atualizar)
       'frequencia:create',
@@ -218,6 +236,7 @@ const ROLES = {
       // Leitura de turmas e disciplinas
       'turmas:read',
       'disciplinas:read',
+      'programas-ensino:read',
 
       // Leitura de atividades pedagógicas
       'frequencia:read',

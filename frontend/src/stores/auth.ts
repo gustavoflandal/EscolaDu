@@ -17,10 +17,12 @@ export const useAuthStore = defineStore('auth', () => {
       const response = await authService.login(credentials)
       token.value = response.accessToken
       refreshTokenValue.value = response.refreshToken
-      user.value = response.user
 
       localStorage.setItem('token', response.accessToken)
       localStorage.setItem('refreshToken', response.refreshToken)
+
+      // Carregar dados completos do usuário (com permissões)
+      await fetchUser()
 
       return response
     } finally {
