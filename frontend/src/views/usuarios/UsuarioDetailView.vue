@@ -147,7 +147,8 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter, RouterLink } from 'vue-router';
 import { useToast } from 'vue-toastification';
-import usersService, { type User } from '@/services/users.service';
+import usersService from '@/services/users.service';
+import type { User } from '@/types';
 
 const route = useRoute();
 const router = useRouter();

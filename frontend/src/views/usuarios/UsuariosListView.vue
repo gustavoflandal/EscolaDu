@@ -219,7 +219,8 @@
 import { ref, onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
 import { useToast } from 'vue-toastification';
-import usersService, { type User } from '@/services/users.service';
+import usersService from '@/services/users.service';
+import type { User } from '@/types';
 import { rolesService, type Role } from '@/services/roles.service';
 
 type RoleColor = {
@@ -238,7 +239,7 @@ const roleColorMap: Record<string, RoleColor> = {
   default: { badgeBg: 'bg-blue-100', badgeText: 'text-blue-800', avatarBg: 'bg-primary-100', avatarText: 'text-primary-700' }
 };
 
-function getRoleBadgeClasses(role: Role) {
+function getRoleBadgeClasses(role: { name: string }) {
   const color = roleColorMap[role.name] || roleColorMap.default;
   return `${color.badgeBg} ${color.badgeText}`;
 }

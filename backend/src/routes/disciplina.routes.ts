@@ -123,4 +123,41 @@ router.delete(
   disciplinaController.deleteObjetivo
 );
 
+// ==================== ROTAS DE TURMAS ====================
+
+// Listar turmas vinculadas a uma disciplina
+router.get(
+  '/:id/turmas',
+  requirePermission('disciplinas', 'read'),
+  disciplinaController.getTurmas
+);
+
+// Listar turmas disponíveis para vincular
+router.get(
+  '/:id/turmas/disponiveis',
+  requirePermission('disciplinas', 'read'),
+  disciplinaController.getTurmasDisponiveis
+);
+
+// Vincular turma a disciplina
+router.post(
+  '/:id/turmas',
+  requirePermission('disciplinas', 'update'),
+  disciplinaController.vincularTurma
+);
+
+// Atualizar vínculo turma-disciplina
+router.put(
+  '/:id/turmas/:vinculoId',
+  requirePermission('disciplinas', 'update'),
+  disciplinaController.atualizarVinculoTurma
+);
+
+// Desvincular turma de disciplina
+router.delete(
+  '/:id/turmas/:turmaId',
+  requirePermission('disciplinas', 'update'),
+  disciplinaController.desvincularTurma
+);
+
 export default router;

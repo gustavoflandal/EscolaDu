@@ -185,6 +185,38 @@ const router = createRouter({
           name: 'professor-editar',
           component: () => import('@/views/professores/ProfessorFormView.vue'),
           meta: { module: 'professores' }
+        },
+        // Agenda de Professores
+        {
+          path: '/agenda-professores',
+          name: 'agenda-professores',
+          component: () => import('@/views/professores/AgendaProfessorView.vue'),
+          meta: { module: 'professores' }
+        },
+        // Rotas de Cadastros Básicos
+        {
+          path: '/cadastros',
+          name: 'cadastros',
+          component: () => import('@/views/cadastros/CadastrosIndexView.vue'),
+          meta: { module: 'cadastros' }
+        },
+        {
+          path: '/cadastros/series',
+          name: 'cadastros-series',
+          component: () => import('@/views/cadastros/SeriesListView.vue'),
+          meta: { module: 'cadastros' }
+        },
+        {
+          path: '/cadastros/salas',
+          name: 'cadastros-salas',
+          component: () => import('@/views/cadastros/SalasListView.vue'),
+          meta: { module: 'cadastros' }
+        },
+        {
+          path: '/cadastros/feriados',
+          name: 'cadastros-feriados',
+          component: () => import('@/views/cadastros/FeriadosListView.vue'),
+          meta: { module: 'cadastros' }
         }
       ]
     }

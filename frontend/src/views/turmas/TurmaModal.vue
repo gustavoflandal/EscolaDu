@@ -72,14 +72,18 @@
               <label class="block text-sm font-medium text-gray-700 mb-2">
                 Série <span class="text-red-500">*</span>
               </label>
-              <input
-                v-model="form.serie"
-                type="text"
-                class="input"
-                placeholder="Ex: 1º Ano"
-                required
-                maxlength="50"
-              />
+              <select v-model="form.serie" required class="input">
+                <option value="">Selecione...</option>
+                <option value="1º Ano">1º Ano</option>
+                <option value="2º Ano">2º Ano</option>
+                <option value="3º Ano">3º Ano</option>
+                <option value="4º Ano">4º Ano</option>
+                <option value="5º Ano">5º Ano</option>
+                <option value="6º Ano">6º Ano</option>
+                <option value="7º Ano">7º Ano</option>
+                <option value="8º Ano">8º Ano</option>
+                <option value="9º Ano">9º Ano</option>
+              </select>
             </div>
 
             <!-- Turno -->

@@ -222,7 +222,6 @@ async function main() {
       data: {
         userId: userProf.id,
         registroProfissional: `RP${randomInt(10000, 99999)}`,
-        formacao: randomItem(['Pedagogia', 'Letras', 'Matemática', 'Ciências', 'História', 'Geografia']),
         cargaHoraria: randomInt(20, 40),
       },
     });
@@ -266,6 +265,18 @@ async function main() {
     periodos.push(periodo);
   }
 
+  // Buscar séries e salas do banco (antes de criar turmas e objetivos)
+  console.log('📖 Buscando séries e salas...');
+  const seriesDB = await prisma.serie.findMany({ where: { active: true }, orderBy: { ordem: 'asc' } });
+  const salasDB = await prisma.sala.findMany({ where: { active: true } });
+  
+  if (seriesDB.length === 0) {
+    throw new Error('Nenhuma série encontrada! Execute o seed de cadastros básicos primeiro.');
+  }
+  if (salasDB.length === 0) {
+    throw new Error('Nenhuma sala encontrada! Execute o seed de cadastros básicos primeiro.');
+  }
+
   // Criar disciplinas
   console.log('📚 Criando disciplinas...');
   const disciplinasData = [
@@ -292,21 +303,20 @@ async function main() {
   // Criar turmas
   console.log('🏫 Criando turmas...');
   const turmas = [];
-  const series = ['1º Ano', '2º Ano', '3º Ano', '4º Ano', '5º Ano', '6º Ano', '7º Ano', '8º Ano', '9º Ano'];
   const turnos = ['MANHA', 'TARDE'];
   
-  for (const serie of series) {
+  for (const serieDB of seriesDB) {
     for (const turno of turnos) {
-      const codigo = `${serie.charAt(0)}${turno.charAt(0)}`;
+      const codigo = `${serieDB.codigo}${turno.charAt(0)}`;
       const turma = await prisma.turma.create({
         data: {
           codigo,
-          nome: `${serie} - ${turno === 'MANHA' ? 'Manhã' : 'Tarde'}`,
+          nome: `${serieDB.nome} - ${turno === 'MANHA' ? 'Manhã' : 'Tarde'}`,
           anoLetivoId: anoLetivo.id,
-          serie,
+          serieId: serieDB.id,
           turno,
           capacidadeMaxima: 30,
-          sala: `Sala ${randomInt(1, 20)}`,
+          salaId: randomItem(salasDB).id,
           professorRegenteId: randomItem(professores).id,
         },
       });
@@ -466,50 +476,14 @@ async function main() {
   }
 
   // Criar objetivos de aprendizagem
-  console.log('🎯 Criando objetivos de aprendizagem...');
+  console.log('🎯 Pulando criação de objetivos (agora pertencem a programas de ensino)...');
   const objetivos = [];
-  for (const disciplina of disciplinas) {
-    for (let i = 1; i <= 10; i++) {
-      const objetivo = await prisma.objetivoAprendizagem.create({
-        data: {
-          codigoBNCC: `${disciplina.codigo}_OBJ_${i}`,
-          descricao: `Objetivo de aprendizagem ${i} de ${disciplina.nome}`,
-          disciplinaId: disciplina.id,
-          serie: randomItem(series),
-          periodo: randomItem(['1º Trimestre', '2º Trimestre', '3º Trimestre']),
-          competencia: `Competência relacionada ao objetivo ${i}`,
-          habilidade: `Habilidade a ser desenvolvida`,
-        },
-      });
-      objetivos.push(objetivo);
-    }
-  }
-
+  
+  // TODO: Implementar criação de programas de ensino e depois seus objetivos
+  // Os objetivos agora são vinculados a programas de ensino, não diretamente a disciplinas
+  
   // Criar avaliações de objetivos
-  console.log('✏️ Criando avaliações de objetivos...');
-  for (const turma of turmas) {
-    const matriculas = await prisma.matricula.findMany({
-      where: { turmaId: turma.id },
-    });
-
-    const objetivosTurma = objetivos.filter(obj => obj.serie === turma.serie).slice(0, 15);
-
-    for (const matricula of matriculas) {
-      for (const objetivo of objetivosTurma) {
-        const status = randomItem(['A', 'A', 'D', 'N']); // 50% atingido, 25% em desenvolvimento, 25% não atingido
-        await prisma.avaliacaoObjetivo.create({
-          data: {
-            objetivoId: objetivo.id,
-            alunoId: matricula.alunoId,
-            turmaId: turma.id,
-            status,
-            observacao: status === 'N' ? 'Necessita reforço' : status === 'D' ? 'Em progresso' : 'Objetivo alcançado',
-            avaliadoPor: adminUser.id,
-          },
-        });
-      }
-    }
-  }
+  console.log('✏️ Pulando criação de avaliações (sem objetivos)...');
 
   // Configurações da escola
   console.log('⚙️ Criando configurações...');

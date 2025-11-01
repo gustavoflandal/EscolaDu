@@ -56,6 +56,15 @@
           >
             Professores
           </RouterLink>
+
+          <RouterLink
+            v-if="canAccessModule('professores')"
+            to="/agenda-professores"
+            class="border-transparent text-gray-600 hover:border-primary-400 hover:text-gray-900 inline-flex items-center px-1 border-b-2 text-sm font-medium transition-colors"
+            active-class="border-primary-500 text-primary-600"
+          >
+            Agenda
+          </RouterLink>
           
           <RouterLink
             v-if="canAccessModule('turmas')"
@@ -73,6 +82,15 @@
             active-class="border-primary-500 text-primary-600"
           >
             Disciplinas
+          </RouterLink>
+
+          <RouterLink
+            v-if="canAccessModule('cadastros')"
+            to="/cadastros"
+            class="border-transparent text-gray-600 hover:border-primary-400 hover:text-gray-900 inline-flex items-center px-1 border-b-2 text-sm font-medium transition-colors"
+            active-class="border-primary-500 text-primary-600"
+          >
+            Cadastros
           </RouterLink>
           
           <RouterLink

@@ -87,4 +87,11 @@ router.delete(
   professorController.deleteFormacao
 );
 
+// Rotas de agenda
+router.get(
+  '/:id/agenda',
+  requirePermission('professores', 'read'),
+  professorController.getAgenda
+);
+
 export default router;

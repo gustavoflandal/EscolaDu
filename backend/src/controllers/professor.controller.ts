@@ -220,6 +220,30 @@ class ProfessorController {
       });
     }
   }
+
+  // Agenda
+  async getAgenda(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const { dataInicio, dataFim } = req.query;
+
+      const agenda = await professorService.getAgenda(id, {
+        dataInicio: dataInicio as string | undefined,
+        dataFim: dataFim as string | undefined
+      });
+
+      res.json({
+        success: true,
+        data: agenda
+      });
+    } catch (error: any) {
+      logger.error(`Erro ao buscar agenda do professor ${req.params.id}:`, error);
+      res.status(error.message === 'Professor não encontrado' ? 404 : 500).json({
+        success: false,
+        message: error.message || 'Erro ao buscar agenda'
+      });
+    }
+  }
 }
 
 export default new ProfessorController();

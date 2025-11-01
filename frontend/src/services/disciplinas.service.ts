@@ -188,6 +188,87 @@ const disciplinasService = {
       `/disciplinas/${disciplinaId}/objetivos`
     )
     return data.data
+  },
+
+  // ==================== TURMAS ====================
+
+  /**
+   * Lista turmas vinculadas a uma disciplina
+   */
+  async getTurmas(disciplinaId: string) {
+    const { data } = await api.get<ApiResponse<any[]>>(`/disciplinas/${disciplinaId}/turmas`)
+    return data.data
+  },
+
+  /**
+   * Lista turmas disponíveis para vincular a uma disciplina
+   */
+  async getTurmasDisponiveis(disciplinaId: string) {
+    const { data } = await api.get<ApiResponse<any[]>>(`/disciplinas/${disciplinaId}/turmas/disponiveis`)
+    return data.data
+  },
+
+  /**
+   * Vincula uma turma a uma disciplina
+   */
+  async vincularTurma(disciplinaId: string, vincularData: {
+    turmaId: string
+    professorId: string
+    diaSemana?: number
+    horarioInicio?: string
+    horarioFim?: string
+  }) {
+    const { data } = await api.post<ApiResponse<any>>(
+      `/disciplinas/${disciplinaId}/turmas`,
+      vincularData
+    )
+    return data.data
+  },
+
+  /**
+   * Atualiza um vínculo turma-disciplina
+   */
+  async atualizarVinculoTurma(disciplinaId: string, vinculoId: string, updateData: {
+    professorId?: string
+    diaSemana?: number
+    horarioInicio?: string
+    horarioFim?: string
+  }) {
+    const { data } = await api.put<ApiResponse<any>>(
+      `/disciplinas/${disciplinaId}/turmas/${vinculoId}`,
+      updateData
+    )
+    return data.data
+  },
+
+  /**
+   * Desvincula uma turma de uma disciplina
+   */
+  async desvincularTurma(disciplinaId: string, turmaId: string): Promise<void> {
+    await api.delete(`/disciplinas/${disciplinaId}/turmas/${turmaId}`)
+  },
+
+  /**
+   * Obtém estatísticas das disciplinas
+   */
+  async getStats() {
+    try {
+      const { data } = await api.get<ApiResponse<{
+        total: number
+        ativas: number
+        inativas: number
+        totalTurmas: number
+      }>>('/disciplinas/stats')
+      return data.data
+    } catch (error) {
+      // Se o endpoint não existir, retornar dados padrão
+      return {
+        total: 0,
+        ativas: 0,
+        inativas: 0,
+        totalTurmas: 0
+      }
+    }
   }
 }
 

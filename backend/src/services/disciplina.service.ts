@@ -508,6 +508,376 @@ export class DisciplinaService {
       ]
     });
   }
+
+  // ==================== TURMAS ====================
+
+  async getTurmas(disciplinaId: string) {
+    const disciplina = await prisma.disciplina.findUnique({
+      where: { id: disciplinaId },
+      include: {
+        turmas: {
+          include: {
+            turma: {
+              select: {
+                id: true,
+                codigo: true,
+                nome: true,
+                serie: true,
+                turno: true,
+                capacidadeMaxima: true,
+                active: true
+              }
+            },
+            professor: {
+              select: {
+                id: true,
+                user: {
+                  select: {
+                    name: true,
+                    email: true
+                  }
+                }
+              }
+            }
+          },
+          orderBy: {
+            turma: {
+              codigo: 'asc'
+            }
+          }
+        }
+      }
+    });
+
+    if (!disciplina) {
+      throw new Error('Disciplina não encontrada');
+    }
+
+    return disciplina.turmas;
+  }
+
+  async vincularTurma(disciplinaId: string, data: {
+    turmaId: string;
+    professorId: string;
+    diaSemana?: number;
+    horarioInicio?: string;
+    horarioFim?: string;
+  }) {
+    // Verificar se disciplina existe
+    const disciplina = await prisma.disciplina.findUnique({
+      where: { id: disciplinaId }
+    });
+
+    if (!disciplina) {
+      throw new Error('Disciplina não encontrada');
+    }
+
+    // Verificar se turma existe
+    const turma = await prisma.turma.findUnique({
+      where: { id: data.turmaId }
+    });
+
+    if (!turma) {
+      throw new Error('Turma não encontrada');
+    }
+
+    // Verificar se professor existe
+    const professor = await prisma.professor.findUnique({
+      where: { id: data.professorId }
+    });
+
+    if (!professor) {
+      throw new Error('Professor não encontrado');
+    }
+
+    // Verificar se já existe vínculo
+    const vinculoExistente = await prisma.turmaDisciplina.findUnique({
+      where: {
+        turmaId_disciplinaId: {
+          turmaId: data.turmaId,
+          disciplinaId
+        }
+      }
+    });
+
+    if (vinculoExistente) {
+      throw new Error('Esta turma já está vinculada a esta disciplina');
+    }
+
+    // Verificar conflito de horários do professor
+    if (data.diaSemana && data.horarioInicio && data.horarioFim) {
+      const conflito = await this.verificarConflitoHorario(
+        data.professorId,
+        data.diaSemana,
+        data.horarioInicio,
+        data.horarioFim
+      );
+
+      if (conflito) {
+        throw new Error(
+          `Conflito de horário: O professor já possui aula(s) no(a) ${this.getDiaSemanaLabel(data.diaSemana)} ` +
+          `das ${data.horarioInicio} às ${data.horarioFim} na disciplina "${conflito.disciplina.nome}" ` +
+          `com a turma "${conflito.turma.nome}"`
+        );
+      }
+    }
+
+    // Criar vínculo
+    return prisma.turmaDisciplina.create({
+      data: {
+        turmaId: data.turmaId,
+        disciplinaId,
+        professorId: data.professorId,
+        diaSemana: data.diaSemana,
+        horarioInicio: data.horarioInicio,
+        horarioFim: data.horarioFim
+      },
+      include: {
+        turma: {
+          select: {
+            id: true,
+            codigo: true,
+            nome: true,
+            serie: true,
+            turno: true
+          }
+        },
+        disciplina: {
+          select: {
+            id: true,
+            codigo: true,
+            nome: true
+          }
+        },
+        professor: {
+          select: {
+            id: true,
+            user: {
+              select: {
+                name: true,
+                email: true
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  async atualizarVinculoTurma(disciplinaId: string, vinculoId: string, data: {
+    professorId?: string;
+    diaSemana?: number;
+    horarioInicio?: string;
+    horarioFim?: string;
+  }) {
+    // Verificar se vínculo existe
+    const vinculo = await prisma.turmaDisciplina.findUnique({
+      where: { id: vinculoId }
+    });
+
+    if (!vinculo || vinculo.disciplinaId !== disciplinaId) {
+      throw new Error('Vínculo não encontrado');
+    }
+
+    // Se está alterando professor, verificar se existe
+    if (data.professorId) {
+      const professor = await prisma.professor.findUnique({
+        where: { id: data.professorId }
+      });
+
+      if (!professor) {
+        throw new Error('Professor não encontrado');
+      }
+    }
+
+    // Verificar conflito de horários se estiver alterando horário ou professor
+    const professorId = data.professorId || vinculo.professorId;
+    const diaSemana = data.diaSemana !== undefined ? data.diaSemana : vinculo.diaSemana;
+    const horarioInicio = data.horarioInicio || vinculo.horarioInicio;
+    const horarioFim = data.horarioFim || vinculo.horarioFim;
+
+    if (diaSemana && horarioInicio && horarioFim) {
+      const conflito = await this.verificarConflitoHorario(
+        professorId,
+        diaSemana,
+        horarioInicio,
+        horarioFim,
+        vinculoId // Excluir o próprio vínculo da verificação
+      );
+
+      if (conflito) {
+        throw new Error(
+          `Conflito de horário: O professor já possui aula(s) no(a) ${this.getDiaSemanaLabel(diaSemana)} ` +
+          `das ${horarioInicio} às ${horarioFim} na disciplina "${conflito.disciplina.nome}" ` +
+          `com a turma "${conflito.turma.nome}"`
+        );
+      }
+    }
+
+    // Atualizar vínculo
+    return prisma.turmaDisciplina.update({
+      where: { id: vinculoId },
+      data,
+      include: {
+        turma: {
+          select: {
+            id: true,
+            codigo: true,
+            nome: true,
+            serie: true
+          }
+        },
+        professor: {
+          select: {
+            id: true,
+            user: {
+              select: {
+                name: true
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  async desvincularTurma(disciplinaId: string, turmaId: string) {
+    // Verificar se vínculo existe
+    const vinculo = await prisma.turmaDisciplina.findUnique({
+      where: {
+        turmaId_disciplinaId: {
+          turmaId,
+          disciplinaId
+        }
+      },
+      include: {
+        _count: {
+          select: {
+            aulas: true
+          }
+        }
+      }
+    });
+
+    if (!vinculo) {
+      throw new Error('Vínculo não encontrado');
+    }
+
+    // Verificar se há aulas cadastradas
+    if (vinculo._count.aulas > 0) {
+      throw new Error('Não é possível desvincular turma com aulas cadastradas');
+    }
+
+    // Remover vínculo
+    await prisma.turmaDisciplina.delete({
+      where: {
+        turmaId_disciplinaId: {
+          turmaId,
+          disciplinaId
+        }
+      }
+    });
+  }
+
+  async getTurmasDisponiveis(disciplinaId: string) {
+    // Verificar se disciplina existe
+    const disciplina = await prisma.disciplina.findUnique({
+      where: { id: disciplinaId }
+    });
+
+    if (!disciplina) {
+      throw new Error('Disciplina não encontrada');
+    }
+
+    // Buscar turmas já vinculadas
+    const turmasVinculadas = await prisma.turmaDisciplina.findMany({
+      where: { disciplinaId },
+      select: { turmaId: true }
+    });
+
+    const turmaIds = turmasVinculadas.map(tv => tv.turmaId);
+
+    // Buscar turmas ativas que não estão vinculadas
+    return prisma.turma.findMany({
+      where: {
+        active: true,
+        id: {
+          notIn: turmaIds
+        }
+      },
+      select: {
+        id: true,
+        codigo: true,
+        nome: true,
+        serie: true,
+        turno: true,
+        capacidadeMaxima: true,
+        sala: true
+      },
+      orderBy: {
+        codigo: 'asc'
+      }
+    });
+  }
+
+  // ==================== FUNÇÕES AUXILIARES ====================
+
+  private async verificarConflitoHorario(
+    professorId: string,
+    diaSemana: number,
+    horarioInicio: string,
+    horarioFim: string,
+    excluirVinculoId?: string
+  ) {
+    // Buscar todos os vínculos do professor no mesmo dia da semana
+    const vinculos = await prisma.turmaDisciplina.findMany({
+      where: {
+        professorId,
+        diaSemana,
+        ...(excluirVinculoId && { id: { not: excluirVinculoId } })
+      },
+      include: {
+        disciplina: {
+          select: {
+            nome: true
+          }
+        },
+        turma: {
+          select: {
+            nome: true
+          }
+        }
+      }
+    });
+
+    // Verificar se há conflito de horários
+    for (const vinculo of vinculos) {
+      if (!vinculo.horarioInicio || !vinculo.horarioFim) continue;
+
+      const inicio1 = this.timeToMinutes(horarioInicio);
+      const fim1 = this.timeToMinutes(horarioFim);
+      const inicio2 = this.timeToMinutes(vinculo.horarioInicio);
+      const fim2 = this.timeToMinutes(vinculo.horarioFim);
+
+      // Verifica se há sobreposição de horários
+      // Conflito ocorre se: (inicio1 < fim2) E (fim1 > inicio2)
+      if (inicio1 < fim2 && fim1 > inicio2) {
+        return vinculo;
+      }
+    }
+
+    return null;
+  }
+
+  private timeToMinutes(time: string): number {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours * 60 + minutes;
+  }
+
+  private getDiaSemanaLabel(dia: number): string {
+    const dias = ['', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo'];
+    return dias[dia] || '';
+  }
 }
 
 export default new DisciplinaService();
