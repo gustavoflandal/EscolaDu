@@ -156,6 +156,65 @@ export class DisciplinaController {
       next(error);
     }
   }
+
+  // ==================== TURMAS ====================
+
+  async getTurmas(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { id } = req.params;
+      const turmas = await disciplinaService.getTurmas(id);
+      successResponse(res, turmas, 'Turmas vinculadas listadas com sucesso');
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async vincularTurma(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { id } = req.params;
+      const { turmaId, professorId, diaSemana, horarioInicio, horarioFim } = req.body;
+      const vinculo = await disciplinaService.vincularTurma(id, {
+        turmaId,
+        professorId,
+        diaSemana,
+        horarioInicio,
+        horarioFim
+      });
+      successResponse(res, vinculo, 'Turma vinculada com sucesso', 201);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async atualizarVinculoTurma(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { id, vinculoId } = req.params;
+      const vinculo = await disciplinaService.atualizarVinculoTurma(id, vinculoId, req.body);
+      successResponse(res, vinculo, 'Vínculo atualizado com sucesso');
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async desvincularTurma(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { id, turmaId } = req.params;
+      await disciplinaService.desvincularTurma(id, turmaId);
+      successResponse(res, null, 'Turma desvinculada com sucesso');
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getTurmasDisponiveis(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { id } = req.params;
+      const turmas = await disciplinaService.getTurmasDisponiveis(id);
+      successResponse(res, turmas, 'Turmas disponíveis listadas com sucesso');
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new DisciplinaController();

@@ -26,29 +26,48 @@ api.interceptors.request.use(
 )
 
 // Response interceptor
+let isRefreshing = false
 api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const authStore = useAuthStore()
+    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean }
     
-    if (error.response?.status === 401) {
-      // Token expirado, tentar refresh
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      // Evitar tentativa de refresh na própria rota de refresh
+      if (originalRequest.url?.includes('/auth/refresh')) {
+        authStore.logout()
+        window.location.href = '/login'
+        return Promise.reject(error)
+      }
+
+      // Evitar múltiplas tentativas simultâneas
+      if (isRefreshing) {
+        return Promise.reject(error)
+      }
+
+      originalRequest._retry = true
+      isRefreshing = true
+
       try {
         await authStore.refreshToken()
-        // Retentar requisição original
-        if (error.config) {
-          return api.request(error.config)
-        }
+        isRefreshing = false
+        // Retentar requisição original com novo token
+        return api.request(originalRequest)
       } catch (refreshError) {
+        isRefreshing = false
         // Refresh falhou, fazer logout
         authStore.logout()
         window.location.href = '/login'
+        return Promise.reject(refreshError)
       }
     }
 
-    // Mostrar mensagem de erro
-    const message = (error.response?.data as any)?.message || 'Erro ao processar requisição'
-    toast.error(message)
+    // Mostrar mensagem de erro apenas se não for erro 401 (já tratado)
+    if (error.response?.status !== 401) {
+      const message = (error.response?.data as any)?.message || 'Erro ao processar requisição'
+      toast.error(message)
+    }
 
     return Promise.reject(error)
   }

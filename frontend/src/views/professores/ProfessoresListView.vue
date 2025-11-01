@@ -331,18 +331,16 @@ async function loadProfessores() {
       limit: pagination.value.limit
     })
 
-    // A resposta do backend tem estrutura: { data: [...], pagination: {...} }
+    // A resposta do backend tem estrutura: { data: [...], page, limit, total, totalPages }
     const result = response.data || response
     
     professores.value = result.data || []
     
-    // Extrair paginação do objeto pagination ou da raiz
-    const pag = result.pagination || result
     pagination.value = {
-      page: pag.page || 1,
-      limit: pag.limit || 10,
-      total: pag.total || 0,
-      totalPages: pag.totalPages || 1
+      page: result.page || 1,
+      limit: result.limit || 10,
+      total: result.total || 0,
+      totalPages: result.totalPages || 1
     }
   } catch (error: any) {
     console.error('Erro ao carregar professores:', error)

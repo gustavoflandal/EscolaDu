@@ -20,7 +20,7 @@
 
         <!-- Body -->
         <div class="px-6 py-4">
-          <form @submit.prevent="handleSubmit">
+          <div>
             <!-- Filtro de Busca -->
             <div class="mb-4">
               <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -129,7 +129,7 @@
                 Fechar
               </button>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>

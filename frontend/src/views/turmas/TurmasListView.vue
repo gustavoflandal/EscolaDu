@@ -268,12 +268,12 @@ async function loadTurmas() {
   try {
     const result = await turmasService.list(filters.value)
     console.log('Result completo:', result)
-    turmas.value = result.data || result
+    turmas.value = result.data
     pagination.value = {
-      page: result.page || result.pagination?.page || 1,
-      limit: result.limit || result.pagination?.limit || 10,
-      total: result.total || result.pagination?.total || turmas.value.length,
-      totalPages: result.totalPages || result.pagination?.totalPages || 1
+      page: result.page,
+      limit: result.limit,
+      total: result.total,
+      totalPages: result.totalPages
     }
     console.log('Pagination:', pagination.value)
   } catch (error: any) {

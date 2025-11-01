@@ -264,16 +264,18 @@ model Turma {
   codigo             String   @unique
   nome               String
   anoLetivoId        String
-  serie              String // "1º Ano", "2º Ano", etc.
+  serieId            String
   turno              String // MANHA, TARDE, NOITE, INTEGRAL
   capacidadeMaxima   Int      @default(30)
-  sala               String?
+  salaId             String?
   professorRegenteId String?
   active             Boolean  @default(true)
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 
   anoLetivo        AnoLetivo           @relation(fields: [anoLetivoId], references: [id])
+  serie            Serie               @relation(fields: [serieId], references: [id])
+  sala             Sala?               @relation(fields: [salaId], references: [id], onDelete: SetNull)
   professorRegente Professor?          @relation("ProfessorRegente", fields: [professorRegenteId], references: [id], onDelete: SetNull)
   matriculas       Matricula[]
   disciplinas      TurmaDisciplina[]
@@ -283,6 +285,8 @@ model Turma {
 
   @@index([codigo])
   @@index([anoLetivoId])
+  @@index([serieId])
+  @@index([salaId])
   @@map("turmas")
 }
 
@@ -635,4 +639,65 @@ model TermoConsentimento {
 
   @@index([usuarioId])
   @@map("termo_consentimento")
+}
+
+// ========================================
+// MÓDULO: CADASTROS BÁSICOS
+// ========================================
+
+model Sala {
+  id         String   @id @default(uuid())
+  codigo     String   @unique @db.VarChar(50)
+  nome       String   @db.VarChar(100)
+  capacidade Int
+  andar      String?  @db.VarChar(20)
+  bloco      String?  @db.VarChar(20)
+  descricao  String?  @db.Text
+  recursos   String?  @db.Text // JSON string com recursos disponíveis
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  turmas Turma[]
+
+  @@map("Sala")
+}
+
+model Serie {
+  id          String   @id @default(uuid())
+  codigo      String   @unique @db.VarChar(20)
+  nome        String   @unique @db.VarChar(50)
+  descricao   String?  @db.Text
+  ordem       Int // Para ordenação (1º ano = 1, 2º ano = 2, etc)
+  nivelEnsino String   @db.VarChar(50) // Fundamental I, Fundamental II, Médio
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  turmas Turma[]
+
+  @@map("Serie")
+}
+
+enum TipoFeriado {
+  NACIONAL
+  ESTADUAL
+  MUNICIPAL
+  ESCOLAR
+}
+
+model Feriado {
+  id         String       @id @default(uuid())
+  nome       String       @db.VarChar(100)
+  data       DateTime     @db.Date
+  tipo       TipoFeriado
+  descricao  String?      @db.Text
+  recorrente Boolean      @default(false) // Se repete todo ano
+  active     Boolean      @default(true)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  @@index([data])
+  @@index([tipo])
+  @@map("Feriado")
 }

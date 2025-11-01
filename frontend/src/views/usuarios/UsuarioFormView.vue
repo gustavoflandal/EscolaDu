@@ -223,7 +223,7 @@ async function loadUser() {
       password: '',
       cpf: user.cpf || '',
       phone: user.phone || '',
-      roleIds: user.roles.map(r => r.id),
+      roleIds: user.roles?.map(r => r.id) || [],
       active: user.active
     };
   } catch (error: any) {

@@ -397,6 +397,104 @@ class ProfessorService {
     this.setCache(cacheKey, stats);
     return stats;
   }
+
+  // Agenda
+  async getAgenda(professorId: string, filters?: {
+    dataInicio?: string;
+    dataFim?: string;
+  }) {
+    // Verificar se professor existe
+    const professor = await prisma.professor.findUnique({
+      where: { id: professorId },
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      }
+    });
+
+    if (!professor) {
+      throw new Error('Professor não encontrado');
+    }
+
+    // Buscar todos os vínculos turma-disciplina do professor
+    const vinculos = await prisma.turmaDisciplina.findMany({
+      where: {
+        professorId
+      },
+      include: {
+        turma: {
+          select: {
+            id: true,
+            codigo: true,
+            nome: true,
+            serie: true,
+            turno: true,
+            sala: true,
+            anoLetivo: {
+              select: {
+                ano: true,
+                status: true
+              }
+            }
+          }
+        },
+        disciplina: {
+          select: {
+            id: true,
+            codigo: true,
+            nome: true,
+            cargaHorariaSemanal: true
+          }
+        }
+      },
+      orderBy: [
+        { diaSemana: 'asc' },
+        { horarioInicio: 'asc' }
+      ]
+    });
+
+    // Agrupar por dia da semana
+    const agendaSemanal = Array.from({ length: 7 }, (_, i) => ({
+      diaSemana: i + 1,
+      diaSemanaLabel: this.getDiaSemanaLabel(i + 1),
+      aulas: [] as any[]
+    }));
+
+    vinculos.forEach(vinculo => {
+      if (vinculo.diaSemana) {
+        const diaIndex = vinculo.diaSemana - 1;
+        agendaSemanal[diaIndex].aulas.push({
+          id: vinculo.id,
+          disciplina: vinculo.disciplina,
+          turma: vinculo.turma,
+          horarioInicio: vinculo.horarioInicio,
+          horarioFim: vinculo.horarioFim
+        });
+      }
+    });
+
+    return {
+      professor: {
+        id: professor.id,
+        nome: professor.user.name,
+        email: professor.user.email,
+        registroProfissional: professor.registroProfissional,
+        cargaHoraria: professor.cargaHoraria
+      },
+      agendaSemanal,
+      totalAulas: vinculos.length,
+      filtros: filters
+    };
+  }
+
+  private getDiaSemanaLabel(dia: number): string {
+    const dias = ['', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo'];
+    return dias[dia] || '';
+  }
 }
 
 export default new ProfessorService();

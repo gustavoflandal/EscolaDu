@@ -80,7 +80,8 @@ export function usePermissions() {
     'relatorios': 'relatorios',
     'usuarios': 'users',
     'perfis': 'roles',
-    'dashboard': 'dashboard'
+    'dashboard': 'dashboard',
+    'cadastros': 'cadastros'
   }
 
   /**

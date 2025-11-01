@@ -105,6 +105,16 @@
               <td class="px-6 py-2 whitespace-nowrap text-right text-sm font-medium">
                 <div class="flex justify-end gap-2">
                   <button
+                    v-if="hasPermission('disciplinas', 'read')"
+                    @click="openVincularTurmasModal(disciplina)"
+                    class="text-purple-600 hover:text-purple-900"
+                    title="Vincular Turmas"
+                  >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                    </svg>
+                  </button>
+                  <button
                     @click="viewDisciplina(disciplina.id)"
                     class="text-blue-600 hover:text-blue-900"
                     title="Visualizar"
@@ -204,6 +214,14 @@
       @close="closeModal"
       @saved="handleSaved"
     />
+
+    <!-- Modal Vincular Turmas -->
+    <VincularTurmasModal
+      v-if="showVincularModal"
+      :disciplina="disciplinaVincular"
+      @close="closeVincularTurmasModal"
+      @saved="handleVincularSaved"
+    />
   </div>
 </template>
 
@@ -214,6 +232,7 @@ import { useToast } from 'vue-toastification'
 import disciplinasService from '@/services/disciplinas.service'
 import type { Disciplina, PaginatedResponse } from '@/types'
 import DisciplinaModal from './DisciplinaModal.vue'
+import VincularTurmasModal from './VincularTurmasModal.vue'
 import { usePermissions } from '@/composables/usePermissions'
 
 const router = useRouter()
@@ -226,6 +245,8 @@ const areasConhecimento = ref<string[]>([])
 const loading = ref(false)
 const showModal = ref(false)
 const selectedDisciplina = ref<Disciplina | undefined>()
+const showVincularModal = ref(false)
+const disciplinaVincular = ref<Disciplina | null>(null)
 const pagination = ref<PaginatedResponse<Disciplina> | null>(null)
 
 // Filtros
@@ -294,6 +315,22 @@ const closeModal = () => {
 
 const handleSaved = () => {
   closeModal()
+  loadDisciplinas()
+}
+
+// Modal Vincular Turmas
+const openVincularTurmasModal = (disciplina: Disciplina) => {
+  disciplinaVincular.value = disciplina
+  showVincularModal.value = true
+}
+
+const closeVincularTurmasModal = () => {
+  showVincularModal.value = false
+  disciplinaVincular.value = null
+}
+
+const handleVincularSaved = () => {
+  closeVincularTurmasModal()
   loadDisciplinas()
 }
 

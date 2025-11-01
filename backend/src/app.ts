@@ -16,6 +16,7 @@ import turmaRoutes from './routes/turma.routes';
 import disciplinaRoutes from './routes/disciplina.routes';
 import programaEnsinoRoutes from './routes/programa-ensino.routes';
 import objetivoAprendizagemRoutes from './routes/objetivo-aprendizagem.routes';
+import cadastrosRoutes from './routes/cadastros.routes';
 
 export function createApp(): Application {
   const app = express();
@@ -55,6 +56,7 @@ export function createApp(): Application {
   app.use('/api/v1/disciplinas', disciplinaRoutes);
   app.use('/api/v1/programas-ensino', programaEnsinoRoutes);
   app.use('/api/v1/objetivos-aprendizagem', objetivoAprendizagemRoutes);
+  app.use('/api/v1/cadastros', cadastrosRoutes);
 
   // Rota 404
   app.use((req, res) => {

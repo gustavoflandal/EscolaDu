@@ -92,5 +92,17 @@ export const professoresService = {
 
   async deleteFormacao(id: string): Promise<void> {
     await api.delete(`/professores/formacoes/${id}`)
+  },
+
+  async getAgenda(professorId: string, filters?: {
+    dataInicio?: string
+    dataFim?: string
+  }): Promise<any> {
+    const { data } = await api.get(`/professores/${professorId}/agenda`, {
+      params: filters
+    })
+    return data.data
   }
 }
+
+export default professoresService

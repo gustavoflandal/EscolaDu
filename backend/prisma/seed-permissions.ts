@@ -53,6 +53,12 @@ const RESOURCES = {
     actions: ['create', 'read', 'update', 'delete'],
   },
 
+  // Cadastros básicos
+  cadastros: {
+    name: 'Cadastros Básicos',
+    actions: ['create', 'read', 'update', 'delete'],
+  },
+
   // Atividades pedagógicas
   frequencia: {
     name: 'Frequência',
@@ -139,6 +145,12 @@ const ROLES = {
       'responsaveis:read',
       'responsaveis:update',
       'responsaveis:delete',
+
+      // Acesso total aos cadastros básicos
+      'cadastros:create',
+      'cadastros:read',
+      'cadastros:update',
+      'cadastros:delete',
 
       // Acesso total às atividades pedagógicas
       'frequencia:create',
