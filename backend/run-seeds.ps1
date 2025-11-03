@@ -10,7 +10,8 @@ $seeds = @(
     "seed-4-professores.ts",
     "seed-5-turmas.ts",
     "seed-6-alunos.ts",
-    "seed-7-programas.ts"
+    "seed-7-programas.ts",
+    "seed-10-frequencia.ts"
 )
 
 foreach ($seed in $seeds) {

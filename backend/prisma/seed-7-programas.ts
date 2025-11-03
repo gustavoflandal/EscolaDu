@@ -93,7 +93,6 @@ async function seed() {
       }
     }
   });
-  const professores = await prisma.professor.findMany();
 
   console.log('Criando programas de ensino...\n');
 
@@ -110,7 +109,7 @@ async function seed() {
           nome: `${disciplina.nome} - ${serie.nome}`,
           descricao: `Programa de ${disciplina.nome} para ${serie.nome} - Ano Letivo 2025`,
           disciplinaId: disciplina.id,
-          serie: serie.nome,
+          serieId: serie.id,
           periodo: "Anual",
           anoLetivo: 2025,
           cargaHoraria: disciplina.cargaHorariaSemanal * 40, // 40 semanas
@@ -136,7 +135,7 @@ async function seed() {
 
         const objetivo = await prisma.objetivoAprendizagem.create({
           data: {
-            codigoBNCC: `${codigoBNCC}-${serie.codigo}`,
+            codigoBNCC: `${codigoBNCC}-${serie.codigo}-${disciplina.codigo}`,
             descricao: descricaoObj,
             programaEnsinoId: programa.id,
             ordem: i + 1,
