@@ -201,6 +201,14 @@ const disciplinasService = {
   },
 
   /**
+   * Lista turmas vinculadas a uma disciplina
+   */
+  async getTurmas(disciplinaId: string) {
+    const { data } = await api.get<ApiResponse<any[]>>(`/disciplinas/${disciplinaId}/turmas`)
+    return data.data
+  },
+
+  /**
    * Lista turmas disponíveis para vincular a uma disciplina
    */
   async getTurmasDisponiveis(disciplinaId: string) {

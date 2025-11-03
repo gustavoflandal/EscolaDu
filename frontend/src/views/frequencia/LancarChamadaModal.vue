@@ -219,16 +219,35 @@ async function loadAlunos() {
   try {
     // Busca alunos da turma através do serviço
     const { default: turmasService } = await import('@/services/turmas.service')
-    const turmaDetalhes = await turmasService.getById(props.aula.turmaId)
-    const alunos = turmaDetalhes.alunos?.map((m: any) => m.aluno) || []
+    const response = await turmasService.getById(props.aula.turmaId)
+    
+    // A API pode retornar { data: turma } ou direto a turma
+    const turmaDetalhes = response.data || response
+    
+    // Mapear alunos - pode ser matriculas com aluno ou direto alunos
+    let alunos: any[] = []
+    if (turmaDetalhes.matriculas && Array.isArray(turmaDetalhes.matriculas)) {
+      alunos = turmaDetalhes.matriculas.map((m: any) => m.aluno).filter((a: any) => a)
+    } else if (turmaDetalhes.alunos && Array.isArray(turmaDetalhes.alunos)) {
+      alunos = turmaDetalhes.alunos.map((m: any) => m.aluno || m).filter((a: any) => a)
+    }
+
+    if (alunos.length === 0) {
+      toast.warning('Nenhum aluno encontrado nesta turma')
+      emit('close')
+      return
+    }
 
     // Busca frequência já lançada (se existir)
     let frequenciaExistente: any[] = []
     try {
       const freq = await frequenciaService.getFrequenciaAula(props.aula.id)
-      frequenciaExistente = freq.registros || []
+      // A API pode retornar { data: { registros: [] } } ou { registros: [] }
+      const freqData = freq.data || freq
+      frequenciaExistente = freqData.registros || []
     } catch (error) {
       // Frequência ainda não foi lançada
+      console.log('Frequência ainda não foi lançada')
     }
 
     // Inicializa registros
@@ -246,7 +265,8 @@ async function loadAlunos() {
       }
     })
   } catch (error: any) {
-    toast.error(error.message || 'Erro ao carregar alunos')
+    console.error('Erro ao carregar alunos:', error)
+    toast.error(error.response?.data?.message || error.message || 'Erro ao carregar alunos')
     emit('close')
   } finally {
     loading.value = false
@@ -291,9 +311,12 @@ async function salvarFrequencia() {
     }
 
     await frequenciaService.lancarChamada(input)
+    toast.success('Frequência salva com sucesso!')
     emit('saved')
   } catch (error: any) {
-    toast.error(error.response?.data?.message || 'Erro ao salvar frequência')
+    console.error('Erro ao salvar frequência:', error)
+    const errorMessage = error.response?.data?.message || error.response?.data?.error?.message || 'Erro ao salvar frequência'
+    toast.error(errorMessage)
   } finally {
     saving.value = false
   }
