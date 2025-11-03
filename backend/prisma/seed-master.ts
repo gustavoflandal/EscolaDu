@@ -55,6 +55,11 @@ const seeds: SeedConfig[] = [
     name: '7. Programas de Ensino',
     file: 'seed-7-programas.ts',
     description: 'Criar programas, objetivos e avaliações'
+  },
+  {
+    name: '10. Frequência',
+    file: 'seed-10-frequencia.ts',
+    description: 'Criar aulas, registros de frequência e justificativas'
   }
 ];
 
@@ -111,7 +116,10 @@ async function main() {
   console.log('   • ~110 Responsáveis');
   console.log('   • 16 Programas de Ensino (disciplinas × séries)');
   console.log('   • ~80 Objetivos de Aprendizagem BNCC');
-  console.log('   • Avaliações de objetivos para alunos\n');
+  console.log('   • Avaliações de objetivos para alunos');
+  console.log('   • Aulas dos últimos 30 dias e próximos 7 dias');
+  console.log('   • Registros de frequência (presente, falta, justificada)');
+  console.log('   • Justificativas de falta (aprovadas e pendentes)\n');
 
   console.log('🎓 Sistema pronto para uso!\n');
   console.log('📝 Credenciais de acesso:');

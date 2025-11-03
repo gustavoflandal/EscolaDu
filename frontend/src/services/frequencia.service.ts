@@ -71,7 +71,6 @@ export interface AulasFilters {
   turmaId?: string;
   turmaDisciplinaId?: string;
   professorId?: string;
-  data?: string; // Filtro por data específica
   dataInicio?: string;
   dataFim?: string;
   status?: string;
@@ -101,7 +100,17 @@ class FrequenciaService {
    * Lista aulas com filtros
    */
   async listAulas(filters?: AulasFilters) {
-    const { data } = await api.get('/frequencia/aulas', { params: filters });
+    // Remove campos undefined para não enviar na query string
+    const cleanFilters: any = {}
+    if (filters) {
+      Object.keys(filters).forEach(key => {
+        const value = (filters as any)[key]
+        if (value !== undefined && value !== null && value !== '') {
+          cleanFilters[key] = value
+        }
+      })
+    }
+    const { data } = await api.get('/frequencia/aulas', { params: cleanFilters });
     return data;
   }
 

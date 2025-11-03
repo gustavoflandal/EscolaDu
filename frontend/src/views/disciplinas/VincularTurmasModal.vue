@@ -1,8 +1,8 @@
 <template>
   <div v-if="isOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+    <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
       <!-- Header -->
-      <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+      <div class="bg-white border-b px-6 py-4 flex justify-between items-center flex-shrink-0">
         <div>
           <h2 class="text-xl font-bold text-gray-900">Turmas/Disciplinas</h2>
           <p v-if="disciplina" class="text-sm text-gray-500">{{ disciplina.nome }}</p>
@@ -18,65 +18,17 @@
       </div>
 
       <!-- Loading -->
-      <div v-if="loading" class="flex items-center justify-center py-12">
+      <div v-if="loading" class="flex items-center justify-center py-12 flex-1">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
       </div>
 
       <!-- Content -->
-      <div v-else class="p-6">
-        <!-- Turmas Vinculadas -->
-        <div v-if="turmasVinculadas.length > 0" class="mb-6">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4">Turmas Vinculadas</h3>
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Turma</th>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Série</th>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Professor</th>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Horário</th>
-                  <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Ações</th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="vinculo in turmasVinculadas" :key="vinculo.id" class="hover:bg-gray-50">
-                  <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {{ vinculo.turma.codigo }} - {{ vinculo.turma.nome }}
-                  </td>
-                  <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
-                    {{ vinculo.turma.serie }}
-                  </td>
-                  <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
-                    {{ vinculo.professor?.user?.name || '-' }}
-                  </td>
-                  <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
-                    <span v-if="vinculo.diaSemana && vinculo.horarioInicio">
-                      {{ getDiaSemanaLabel(vinculo.diaSemana) }} {{ vinculo.horarioInicio }}-{{ vinculo.horarioFim }}
-                    </span>
-                    <span v-else>-</span>
-                  </td>
-                  <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
-                    <button
-                      @click="confirmDesvincular(vinculo)"
-                      class="text-red-600 hover:text-red-900"
-                      title="Desvincular"
-                    >
-                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                      </svg>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
+      <div v-else class="p-6 flex-1 overflow-y-auto">
         <!-- Formulário para Vincular Nova Turma -->
-        <div>
+        <div class="mb-6">
           <h3 class="text-lg font-semibold text-gray-900 mb-4">Vincular Nova Turma</h3>
           
-          <form @submit.prevent="handleVincular" class="space-y-4">
+          <div class="space-y-4">
             <!-- Turma -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -90,7 +42,7 @@
               >
                 <option value="">Selecione uma turma</option>
                 <option v-for="turma in turmasDisponiveis" :key="turma.id" :value="turma.id">
-                  {{ turma.codigo }} - {{ turma.nome }} ({{ turma.serie }})
+                  {{ formatTurmaOption(turma) }}
                 </option>
               </select>
               <p v-if="turmasDisponiveis.length === 0" class="text-xs text-gray-500 mt-1">
@@ -163,32 +115,78 @@
             <div v-if="errorMessage" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
               {{ errorMessage }}
             </div>
+          </div>
+        </div>
 
-            <!-- Actions -->
-            <div class="flex justify-end gap-3">
-              <button
-                type="button"
-                @click="resetForm"
-                class="btn btn-secondary"
-                :disabled="saving"
-              >
-                Limpar
-              </button>
-              <button
-                type="submit"
-                class="btn btn-primary"
-                :disabled="saving || !isFormValid || turmasDisponiveis.length === 0"
-              >
-                <span v-if="saving">Vinculando...</span>
-                <span v-else>Vincular Turma</span>
-              </button>
+        <!-- Turmas Vinculadas -->
+        <div v-if="turmasVinculadas.length > 0">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Turmas Vinculadas</h3>
+          <div class="border border-gray-200 rounded-lg overflow-hidden">
+            <div class="overflow-auto max-h-[250px]">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50 sticky top-0">
+                  <tr>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Turma</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Série</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Professor</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Horário</th>
+                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Ações</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr v-for="vinculo in turmasVinculadas" :key="vinculo.id" class="hover:bg-gray-50">
+                    <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                      {{ getTurmaInfo(vinculo) }}
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
+                      {{ getSerieInfo(vinculo) }}
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
+                      {{ vinculo.professor?.user?.name || '-' }}
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
+                      <span v-if="vinculo.diaSemana && vinculo.horarioInicio">
+                        {{ getDiaSemanaLabel(vinculo.diaSemana) }} {{ vinculo.horarioInicio }}-{{ vinculo.horarioFim }}
+                      </span>
+                      <span v-else>-</span>
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
+                      <button
+                        @click="confirmDesvincular(vinculo)"
+                        class="text-red-600 hover:text-red-900"
+                        title="Desvincular"
+                      >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-          </form>
+          </div>
         </div>
       </div>
 
       <!-- Footer -->
-      <div class="bg-gray-50 border-t px-6 py-3 flex justify-end">
+      <div class="bg-gray-50 border-t px-6 py-3 flex justify-end gap-3 flex-shrink-0">
+        <button
+          type="button"
+          @click="resetForm"
+          class="btn btn-secondary"
+          :disabled="saving"
+        >
+          Limpar
+        </button>
+        <button
+          @click="handleVincular"
+          class="btn btn-primary"
+          :disabled="saving || !isFormValid || turmasDisponiveis.length === 0"
+        >
+          <span v-if="saving">Vinculando...</span>
+          <span v-else>Vincular Turma</span>
+        </button>
         <button @click="$emit('close')" class="btn btn-secondary">
           Fechar
         </button>
@@ -240,6 +238,53 @@ const isFormValid = computed(() => {
 function getDiaSemanaLabel(dia: number): string {
   const dias = ['', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom']
   return dias[dia] || ''
+}
+
+function getTurmaInfo(vinculo: any): string {
+  if (typeof vinculo.turma === 'string') {
+    return vinculo.turma
+  }
+  if (vinculo.turma && typeof vinculo.turma === 'object') {
+    const codigo = vinculo.turma.codigo || ''
+    const nome = vinculo.turma.nome || ''
+    return codigo && nome ? `${codigo} - ${nome}` : (codigo || nome || '-')
+  }
+  return '-'
+}
+
+function getSerieInfo(vinculo: any): string {
+  if (vinculo.turma && typeof vinculo.turma === 'object') {
+    const serie = vinculo.turma.serie
+    if (serie && typeof serie === 'object') {
+      return serie.nome || serie.codigo || '-'
+    }
+  }
+  return '-'
+}
+
+function formatTurmaOption(turma: any): string {
+  if (typeof turma === 'string') {
+    return turma
+  }
+  if (turma && typeof turma === 'object') {
+    const codigo = turma.codigo || ''
+    const nome = turma.nome || ''
+    
+    // A série é um objeto com { codigo, nome, ordem }
+    let serieTexto = ''
+    if (turma.serie && typeof turma.serie === 'object') {
+      serieTexto = turma.serie.nome || turma.serie.codigo || ''
+    }
+    
+    if (codigo && serieTexto && nome) {
+      return `${codigo} - ${serieTexto} - ${nome}`
+    }
+    if (codigo && nome) {
+      return `${codigo} - ${nome}`
+    }
+    return codigo || nome || '-'
+  }
+  return '-'
 }
 
 async function loadData() {

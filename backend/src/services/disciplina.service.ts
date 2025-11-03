@@ -741,6 +741,59 @@ export class DisciplinaService {
     });
   }
 
+  async getTurmasVinculadas(disciplinaId: string) {
+    // Verificar se disciplina existe
+    const disciplina = await prisma.disciplina.findUnique({
+      where: { id: disciplinaId }
+    });
+
+    if (!disciplina) {
+      throw new Error('Disciplina não encontrada');
+    }
+
+    // Buscar turmas vinculadas
+    return prisma.turmaDisciplina.findMany({
+      where: { disciplinaId },
+      select: {
+        id: true,
+        turmaId: true,
+        professorId: true,
+        diaSemana: true,
+        horarioInicio: true,
+        horarioFim: true,
+        turma: {
+          select: {
+            id: true,
+            codigo: true,
+            nome: true,
+            serie: {
+              select: {
+                codigo: true,
+                nome: true,
+                ordem: true
+              }
+            }
+          }
+        },
+        professor: {
+          select: {
+            id: true,
+            user: {
+              select: {
+                name: true
+              }
+            }
+          }
+        }
+      },
+      orderBy: {
+        turma: {
+          codigo: 'asc'
+        }
+      }
+    });
+  }
+
   async desvincularTurma(disciplinaId: string, turmaId: string) {
     // Verificar se vínculo existe
     const vinculo = await prisma.turmaDisciplina.findUnique({
@@ -809,7 +862,13 @@ export class DisciplinaService {
         id: true,
         codigo: true,
         nome: true,
-        serie: true,
+        serie: {
+          select: {
+            codigo: true,
+            nome: true,
+            ordem: true
+          }
+        },
         turno: true,
         capacidadeMaxima: true,
         sala: true
