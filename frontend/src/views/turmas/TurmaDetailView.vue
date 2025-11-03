@@ -87,11 +87,11 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
             <p class="text-sm text-gray-600">Ano Letivo</p>
-            <p class="text-base font-medium text-gray-900 mt-1">{{ turma.ano }}</p>
+            <p class="text-base font-medium text-gray-900 mt-1">{{ turma.anoLetivo?.ano || '-' }}</p>
           </div>
           <div>
             <p class="text-sm text-gray-600">Sala</p>
-            <p class="text-base font-medium text-gray-900 mt-1">{{ turma.sala || '-' }}</p>
+            <p class="text-base font-medium text-gray-900 mt-1">{{ turma.sala?.nome || '-' }}</p>
           </div>
           <div>
             <p class="text-sm text-gray-600">Capacidade Máxima</p>

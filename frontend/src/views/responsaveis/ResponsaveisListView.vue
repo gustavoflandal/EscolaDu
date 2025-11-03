@@ -265,7 +265,8 @@ function formatCPF(cpf: string): string {
   return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
 }
 
-function formatPhone(phone: string): string {
+function formatPhone(phone: string | null): string {
+  if (!phone) return '-';
   if (phone.length === 11) {
     return phone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
   }

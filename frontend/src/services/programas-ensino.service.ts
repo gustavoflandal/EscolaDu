@@ -135,6 +135,16 @@ class ProgramasEnsinoService {
   }
 
   /**
+   * Obter objetivos de aprendizagem de um programa
+   */
+  async getObjetivos(programaId: string) {
+    const response = await api.get(`/objetivos-aprendizagem`, {
+      params: { programaEnsinoId: programaId, limit: 1000 }
+    })
+    return response.data.data || response.data
+  }
+
+  /**
    * Listar séries disponíveis
    */
   async getSeries(): Promise<string[]> {

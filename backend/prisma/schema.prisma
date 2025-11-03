@@ -210,6 +210,7 @@ model Professor {
   turmasRegente Turma[]           @relation("ProfessorRegente")
   disciplinas   TurmaDisciplina[]
   formacoes     Formacao[]
+  aulas         Aula[]
 
   @@map("professores")
 }
@@ -364,10 +365,12 @@ model Aula {
 
   turmaDisciplina TurmaDisciplina      @relation(fields: [turmaDisciplinaId], references: [id], onDelete: Cascade)
   turma           Turma                @relation(fields: [turmaId], references: [id], onDelete: Cascade)
+  professor       Professor?           @relation(fields: [professorId], references: [id], onDelete: SetNull)
   frequencias     RegistroFrequencia[]
 
   @@index([turmaDisciplinaId])
   @@index([data])
+  @@index([professorId])
   @@map("aulas")
 }
 
@@ -427,7 +430,7 @@ model ProgramaEnsino {
   nome         String // "Programa de Português - 1º Ano"
   descricao    String?  @db.Text
   disciplinaId String
-  serie        String // "1º Ano", "2º Ano", etc.
+  serieId      String // FK para Serie
   periodo      String? // "1º Trimestre", "2º Bimestre", "Anual", etc.
   anoLetivo    Int // 2025, 2026, etc.
   cargaHoraria Int? // horas totais do programa
@@ -437,10 +440,11 @@ model ProgramaEnsino {
   updatedAt    DateTime @updatedAt
 
   disciplina Disciplina             @relation(fields: [disciplinaId], references: [id], onDelete: Cascade)
+  serie      Serie                  @relation(fields: [serieId], references: [id], onDelete: Cascade)
   objetivos  ObjetivoAprendizagem[]
 
   @@index([disciplinaId])
-  @@index([serie])
+  @@index([serieId])
   @@index([anoLetivo])
   @@map("programa_ensino")
 }
@@ -674,7 +678,8 @@ model Serie {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  turmas Turma[]
+  turmas            Turma[]
+  programasEnsino   ProgramaEnsino[]
 
   @@map("Serie")
 }

@@ -1,397 +1,249 @@
-# 🌱 Seeds do Sistema - Guia Completo
+# 🌱 Seeds do Sistema de Gestão Escolar
 
-Este diretório contém scripts de seed para popular o banco de dados com dados iniciais e de exemplo. Use estes seeds para rapidamente configurar o sistema com dados de teste completos.
+Este diretório contém scripts de seed modulares para popular o banco de dados com dados consistentes e bem relacionados.
 
-## 🚀 Quick Start - Executar Tudo
+## 📋 Estrutura dos Seeds
 
-Para popular o sistema completo com todos os dados em um único comando:
+Os seeds são executados em ordem numérica, respeitando as dependências entre módulos:
 
-```bash
-npm run prisma:seed-completo
-```
+### 0. Limpeza (`seed-clean.ts`)
+- **Execução**: `npx ts-node prisma/seed-clean.ts`
+- **Descrição**: Limpa todo o banco de dados, preservando apenas o usuário admin
+- **Uso**: Execute antes de recriar dados do zero
 
-Este comando executa:
-1. ✅ Seed principal (`seed.ts`) - Estrutura base do sistema
-2. ✅ Seed adicional (`seed-dados-adicionais.ts`) - Dados complementares
+### 1. Permissões (`seed-1-permissions.ts`)
+- **Execução**: `npx ts-node prisma/seed-1-permissions.ts`
+- **Descrição**: Cria estrutura de autenticação e autorização
+- **Cria**:
+  - 52 permissões (13 recursos × 4 ações: create, read, update, delete)
+  - 4 roles: Administrador, Coordenador, Professor, Responsável
+  - Usuário admin com todas as permissões
+- **Credenciais**: `admin@sge.com` / `Admin@2024`
 
-## 📋 Seeds Disponíveis
+### 2. Cadastros Básicos (`seed-2-cadastros-basicos.ts`)
+- **Execução**: `npx ts-node prisma/seed-2-cadastros-basicos.ts`
+- **Descrição**: Estrutura acadêmica e infraestrutura
+- **Cria**:
+  - 1 ano letivo (2025, 02/01 a 20/12)
+  - 4 períodos (bimestres com datas)
+  - 5 séries (1º ao 5º Ano - Ensino Fundamental I)
+  - 9 salas (6 regulares + 3 especiais: Lab Informática, Lab Ciências, Biblioteca)
+  - 12 feriados nacionais e facultativos
 
-### 1. 🎯 `seed.ts` - Seed Principal (RECOMENDADO)
+### 3. Disciplinas (`seed-3-disciplinas.ts`)
+- **Execução**: `npx ts-node prisma/seed-3-disciplinas.ts`
+- **Descrição**: Currículo escolar
+- **Cria**: 8 disciplinas fundamentais
+  - **Linguagens**: Português (5h/sem), Inglês (2h/sem), Arte (2h/sem), Ed. Física (3h/sem)
+  - **Matemática**: Matemática (5h/sem)
+  - **Ciências da Natureza**: Ciências (3h/sem)
+  - **Ciências Humanas**: História (3h/sem), Geografia (3h/sem)
 
-**Comando:**
-```bash
-npm run prisma:seed
-```
+### 4. Professores (`seed-4-professores.ts`)
+- **Execução**: `npx ts-node prisma/seed-4-professores.ts`
+- **Descrição**: Corpo docente
+- **Cria**:
+  - 8 professores especializados (1 por disciplina)
+  - Contas de usuário para cada professor
+  - Role "Professor" atribuído
+  - 11 formações acadêmicas (graduação, pós, mestrado)
+- **Credenciais**: `[email]` / `Prof@2024`
+- **Instituições**: USP, UNICAMP, UNESP, PUC-SP
 
-**O que cria:**
-- ✅ **38 permissões** para todos os recursos
-- ✅ **4 perfis** completos (Administrador, Coordenador, Professor, Responsável)
-- ✅ **4 usuários** de teste (admin, coordenador, 2 professores)
-- ✅ **2 anos letivos** (2024 encerrado, 2025 em andamento) com 3 períodos cada
-- ✅ **9 disciplinas** completas (Português, Matemática, Ciências, etc.)
-- ✅ **4 objetivos BNCC** de exemplo (1º ano)
-- ✅ **2 professores** cadastrados
-- ✅ **4 turmas** (1º e 2º ano, turmas A e B)
-- ✅ **1 aluno** com responsável e matrícula
-- ✅ **7 configurações** da escola
+### 5. Turmas (`seed-5-turmas.ts`)
+- **Execução**: `npx ts-node prisma/seed-5-turmas.ts`
+- **Descrição**: Classes e horários
+- **Cria**:
+  - 10 turmas (2 por série: manhã e tarde)
+  - Códigos no padrão: 1ANO-M, 1ANO-T, 2ANO-M, etc.
+  - Atribuição de salas e professores regentes
+  - Vínculos turma-disciplina com horários
+  - Grade horária: Manhã (7h-12h), Tarde (13h-18h)
 
-**Credenciais criadas:**
-| Perfil | Email | Senha |
-|--------|-------|-------|
-| Administrador | `admin@escola.com.br` | `Admin@123` |
-| Coordenador | `coordenador@escola.com.br` | `Coord@123` |
-| Professor 1 | `joao.santos@escola.com.br` | `Prof@123` |
-| Professor 2 | `maria.oliveira@escola.com.br` | `Prof@123` |
-| Responsável | `carlos.silva@email.com` | `Resp@123` |
+### 6. Alunos (`seed-6-alunos.ts`)
+- **Execução**: `npx ts-node prisma/seed-6-alunos.ts`
+- **Descrição**: Corpo discente
+- **Cria**:
+  - ~220 alunos (20-25 por turma)
+  - Matrículas vinculadas às turmas
+  - ~110 responsáveis (simulando irmãos)
+  - Contas de usuário para responsáveis
+  - Role "Responsavel" atribuído
+- **Credenciais**: `[email]` / `Resp@2024`
+- **Dados**: CPF, data nascimento, endereço, telefone, email
 
----
+### 7. Programas de Ensino (`seed-7-programas.ts`)
+- **Execução**: `npx ts-node prisma/seed-7-programas.ts`
+- **Descrição**: Planejamento pedagógico
+- **Cria**:
+  - 16 programas (8 disciplinas × 2 séries)
+  - ~80 objetivos de aprendizagem baseados na BNCC
+  - Avaliações de objetivos para amostra de alunos
+  - Códigos BNCC (EF01LP01, EF01MA01, etc.)
+  - Pontuações e indicadores de atingimento
 
-### 2. 📚 `seed-dados-adicionais.ts` - Dados Complementares
+## 🚀 Execução
 
-**Comando:**
-```bash
-npm run prisma:seed-adicional
-```
-
-**O que adiciona:**
-- ✅ **+5 responsáveis** com usuários
-- ✅ **+15 alunos** matriculados e vinculados
-- ✅ **+6 turmas** (3º, 4º e 5º anos)
-- ✅ **+9 objetivos BNCC** (2º e 3º anos)
-
-**Requisitos:**
-- ⚠️ Execute o seed principal primeiro!
-
----
-
-### 3. 📖 `seed-disciplinas.ts` - Disciplinas e Objetivos BNCC
-
-**Comando:**
-```bash
-npm run prisma:seed-disciplinas
-```
-
-**O que cria:**
-- ✅ **9 disciplinas** com carga horária e descrições BNCC
-- ✅ **17 objetivos de aprendizagem** (1º ano) com códigos BNCC oficiais
-- ✅ Áreas de conhecimento configuradas
-- ✅ Competências e habilidades vinculadas
-
-**Disciplinas criadas:**
-- Língua Portuguesa (5h/semana)
-- Matemática (5h/semana)
-- Ciências (3h/semana)
-- História (2h/semana)
-- Geografia (2h/semana)
-- Arte (2h/semana)
-- Educação Física (2h/semana)
-- Língua Inglesa (2h/semana)
-- Ensino Religioso (1h/semana)
-
----
-
-### 4. 🎓 `seed-turmas.ts` - Turmas Completas
-
-**Comando:**
-```bash
-npm run prisma:seed-turmas
-```
-
-**O que cria:**
-- ✅ **33 turmas ativas** para 2025
-- ✅ **3 turmas inativas** de 2024 (para testes)
-- ✅ Distribuição de professores regentes
-- ✅ Anos letivos e períodos configurados
-
-**Turmas por nível:**
-- 🧒 Educação Infantil: 6 turmas
-- 📚 Fundamental I: 10 turmas
-- 📖 Fundamental II: 8 turmas
-- 🎓 Ensino Médio: 6 turmas
-- 🌙 EJA: 3 turmas (noturno)
-
-**Requisitos:**
-- ⚠️ Professores devem existir (seed principal os cria)
-
----
-
-### 5. 👶 `seed-alunos-exemplo.ts` - Alunos de Exemplo
-
-**Comando:**
-```bash
-npm run prisma:seed-alunos
-```
-
-**O que cria:**
-- ✅ **40 alunos** com dados realistas
-- ✅ **40 matrículas** nas turmas
-- ✅ Distribuição automática respeitando capacidade
-
-**Requisitos:**
-- ⚠️ Turmas devem existir (seed principal ou seed-turmas.ts)
-
----
-
-### 6. 🔐 `seed-permissions.ts` - Apenas Permissões
-
-**Comando:**
-```bash
-npm run prisma:seed-permissions
-```
-
-**O que cria:**
-- ✅ Sistema completo de permissões e perfis
-- ✅ Associações de permissões por perfil
-
-**Nota:** Este seed está incluído no seed principal.
-
----
-
-## 🎯 Cenários de Uso
-
-### 📦 Cenário 1: Setup Completo (RECOMENDADO)
-Para iniciar o projeto com dados completos:
+### Opção 1: Seed Master (Recomendado)
+Executa todos os seeds na ordem correta com relatório final:
 
 ```bash
-npm run prisma:seed-completo
+cd backend
+npx ts-node prisma/seed-master.ts
 ```
 
-**Resultado:**
-- 6 responsáveis com usuários
-- 16 alunos matriculados
-- 10 turmas (1º ao 5º ano)
-- 13 objetivos BNCC
-- 9 disciplinas completas
-- 4 usuários de diferentes perfis
+Este comando irá:
+1. Limpar o banco de dados
+2. Executar todos os 7 seeds sequencialmente
+3. Exibir progresso e erros
+4. Mostrar resumo final com estatísticas
 
----
-
-### 📦 Cenário 2: Setup Básico
-Para começar com o mínimo necessário:
+### Opção 2: Seeds Individuais
+Execute seeds específicos conforme necessário:
 
 ```bash
-npm run prisma:seed
+# Limpar banco
+npx ts-node prisma/seed-clean.ts
+
+# Executar seeds na ordem
+npx ts-node prisma/seed-1-permissions.ts
+npx ts-node prisma/seed-2-cadastros-basicos.ts
+npx ts-node prisma/seed-3-disciplinas.ts
+npx ts-node prisma/seed-4-professores.ts
+npx ts-node prisma/seed-5-turmas.ts
+npx ts-node prisma/seed-6-alunos.ts
+npx ts-node prisma/seed-7-programas.ts
 ```
 
-**Resultado:**
-- Estrutura base do sistema
-- 1 exemplo de cada entidade
-- Pronto para adicionar seus dados
-
----
-
-### 📦 Cenário 3: Apenas Disciplinas e BNCC
-Para focar no módulo acadêmico:
+### Opção 3: Recriar Apenas Alguns Módulos
 
 ```bash
-npm run prisma:seed-disciplinas
+# Exemplo: recriar apenas alunos e programas
+npx ts-node prisma/seed-6-alunos.ts
+npx ts-node prisma/seed-7-programas.ts
 ```
 
-**Resultado:**
-- 9 disciplinas completas
-- 17 objetivos BNCC do 1º ano
-- Estrutura BNCC configurada
+## 📊 Dados Gerados
 
----
-
-### 📦 Cenário 4: Apenas Turmas
-Para testar módulo de turmas:
-
-```bash
-npm run prisma:seed-turmas
-```
-
-**Resultado:**
-- 33 turmas ativas
-- 3 turmas inativas (teste)
-- Vários anos e séries
-
-## 📊 Estatísticas do Seed Completo
-
-Após executar `npm run prisma:seed-completo`, você terá:
+Após executar todos os seeds, você terá:
 
 | Categoria | Quantidade |
-|-----------|------------|
-| **Permissões** | 38 |
-| **Perfis** | 4 |
-| **Usuários** | 9 |
-| **Professores** | 2 |
-| **Responsáveis** | 6 |
-| **Alunos** | 16 |
-| **Turmas** | 10 |
-| **Disciplinas** | 9 |
-| **Objetivos BNCC** | 13 |
-| **Anos Letivos** | 2 |
-| **Configurações** | 7 |
+|-----------|-----------|
+| **Autenticação** ||
+| Permissões | 52 |
+| Roles | 4 |
+| Usuários | ~227 (1 admin + 8 professores + ~218 responsáveis) |
+| **Acadêmico** ||
+| Anos Letivos | 1 (2025) |
+| Períodos | 4 (bimestres) |
+| Séries | 5 (1º ao 5º ano) |
+| Salas | 9 |
+| Feriados | 12 |
+| **Currículo** ||
+| Disciplinas | 8 |
+| Turmas | 10 |
+| Turma-Disciplina Vínculos | ~80 |
+| **Pessoas** ||
+| Professores | 8 |
+| Formações | 11 |
+| Alunos | ~220 |
+| Matrículas | ~220 |
+| Responsáveis | ~110 |
+| **Pedagógico** ||
+| Programas de Ensino | 16 |
+| Objetivos de Aprendizagem | ~80 |
+| Avaliações de Objetivos | Centenas |
 
-## 🔄 Re-executar Seeds e Idempotência
+## 🔑 Credenciais de Acesso
 
-### ✅ Seguro para Re-executar
+### Administrador
+- **Email**: admin@sge.com
+- **Senha**: Admin@2024
+- **Permissões**: Todas
 
-Todos os seeds usam operações **idempotentes** com `upsert()`:
+### Professores
+- **Email**: [nome].[sobrenome]@escola.com
+- **Senha**: Prof@2024
+- **Exemplos**:
+  - maria.silva@escola.com (Português)
+  - joao.oliveira@escola.com (Matemática)
+  - ana.costa@escola.com (Ciências)
 
+### Responsáveis
+- **Email**: [nome].[sobrenome].resp@email.com
+- **Senha**: Resp@2024
+- **Exemplo**: carlos.silva.resp@email.com
+
+## ⚠️ Notas Importantes
+
+1. **Ordem de Execução**: Sempre execute os seeds na ordem numérica devido às dependências
+2. **Limpeza**: Use `seed-clean.ts` apenas quando quiser resetar completamente o banco
+3. **Dados Realistas**: Todos os dados são gerados de forma realista com nomes, CPFs, datas válidas
+4. **BNCC**: Objetivos de aprendizagem seguem códigos reais da Base Nacional Comum Curricular
+5. **Senhas**: Todas as senhas são criptografadas com bcrypt antes de salvar no banco
+
+## 🐛 Troubleshooting
+
+### Erro: "Ano letivo não encontrado"
+**Solução**: Execute os seeds em ordem. Seeds 3+ dependem do seed 2.
+
+### Erro: "Role não encontrado"
+**Solução**: Execute o seed 1 primeiro para criar roles.
+
+### Erro: "Foreign key constraint fails"
+**Solução**: Limpe o banco com `seed-clean.ts` e execute todos os seeds novamente.
+
+### Seed travou
+**Solução**: 
+1. Cancele com Ctrl+C
+2. Execute `seed-clean.ts`
+3. Execute `seed-master.ts` novamente
+
+## 📝 Manutenção
+
+### Adicionar Novos Dados
+Para adicionar novos registros sem limpar o banco:
+1. Execute apenas os seeds necessários
+2. Ajuste os dados para evitar conflitos (emails, códigos únicos)
+
+### Modificar Dados Existentes
+1. Edite o arquivo de seed correspondente
+2. Execute `seed-clean.ts`
+3. Execute `seed-master.ts`
+
+### Criar Novo Seed
+Siga o padrão:
 ```typescript
-// Exemplo: não cria duplicatas
-await prisma.disciplina.upsert({
-  where: { codigo: 'PORT' },
-  update: { nome: 'Língua Portuguesa' },
-  create: { codigo: 'PORT', nome: 'Língua Portuguesa' }
-})
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
+
+async function seed() {
+  console.log('📦 Seed X: Nome\n');
+  // Seu código aqui
+  console.log('✅ Seed X concluído!\n');
+}
+
+seed()
+  .catch((e) => {
+    console.error('❌ Erro:', e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
 ```
 
-**Comportamento:**
-- ✅ **Permissões e perfis** - Atualizados se já existirem
-- ✅ **Turmas** - Verificadas por código único
-- ✅ **Alunos** - Verificados por CPF
-- ✅ **Matrículas** - Não duplicadas (verificação por aluno + turma)
+## 🎯 Próximos Passos
 
-**Benefícios:**
-- 🔁 Pode executar múltiplas vezes sem problemas
-- 🔄 Atualiza registros se dados mudarem
-- 🚫 Não cria duplicatas
-- 🛠️ Útil para corrigir dados em desenvolvimento
+Após executar os seeds:
+1. Acesse o sistema com as credenciais do admin
+2. Verifique se turmas mostram nomes de séries (não JSON)
+3. Acesse a agenda dos professores
+4. Teste os módulos de objetivos e avaliações
+5. Verifique os relatórios e dashboards
 
----
+## 📚 Referências
 
-## 🗑️ Limpeza e Reset do Banco
-
-### 🔴 Opção 1: Reset Completo (Recomendado)
-
-Remove TODOS os dados e re-executa migrations + seed principal:
-
-```bash
-npx prisma migrate reset
-```
-
-⚠️ **ATENÇÃO:** Este comando:
-- 🗑️ Apaga TODO o banco de dados
-- 🏗️ Re-cria todas as tabelas
-- ▶️ Executa automaticamente o seed principal (`seed.ts`)
-- ❌ **NÃO executa** seeds adicionais
-
-**Após o reset, para seed completo:**
-```bash
-npm run prisma:seed-adicional
-```
-
----
-
-### 🟡 Opção 2: Limpar Tabelas Manualmente
-
-Se quiser limpar apenas algumas tabelas:
-
-```bash
-# Abrir Prisma Studio (interface visual)
-npx prisma studio
-
-# Ou conectar direto no banco e executar SQL
-```
-
----
-
-## 🎓 Dicas de Uso
-
-### 🛠️ Durante Desenvolvimento
-
-```bash
-# 1. Sempre que modificar o schema.prisma:
-npx prisma migrate dev --name descricao_mudanca
-
-# 2. Para atualizar dados de teste:
-npm run prisma:seed-completo
-
-# 3. Para ver os dados no navegador:
-npx prisma studio
-```
-
-### 🎪 Para Demonstrações
-
-```bash
-# Reset limpo + dados completos:
-npx prisma migrate reset
-npm run prisma:seed-adicional
-```
-
-### 🧪 Para Testes Específicos
-
-```bash
-# Testar apenas turmas:
-npm run prisma:seed-turmas
-
-# Testar apenas disciplinas:
-npm run prisma:seed-disciplinas
-
-# Testar apenas alunos:
-npm run prisma:seed-alunos
-```
-
----
-
-## 🧪 Casos de Uso
-
-### 1. **Testes de Interface**
-Visualização de dados realistas em todas as telas
-
-### 2. **Testes Funcionais**
-Operações CRUD completas com dados consistentes
-
-### 3. **Desenvolvimento Ágil**
-Dados prontos para trabalhar sem configuração manual
-
-### 4. **Demonstrações**
-Sistema populado para apresentações a stakeholders
-
----
-
-## 📝 Criar Seeds Personalizados
-
-Para criar seus próprios dados:
-
-1. **Copie um seed existente:**
-   ```bash
-   cp prisma/seed.ts prisma/seed-custom.ts
-   ```
-
-2. **Modifique os dados conforme necessário**
-
-3. **Adicione um script no `package.json`:**
-   ```json
-   "prisma:seed-custom": "tsx prisma/seed-custom.ts"
-   ```
-
-4. **Execute:**
-   ```bash
-   npm run prisma:seed-custom
-   ```
-
----
-
-## ⚠️ Avisos Importantes
-
-| ⚠️ Aviso | Descrição |
-|---------|-----------|
-| 🚫 **Produção** | **NÃO execute estes seeds em produção** - São apenas para desenvolvimento |
-| 🔒 **Segurança** | Senhas de exemplo não são seguras (todas são `@123`) |
-| 📧 **Dados Fictícios** | Emails, telefones e CPFs são fictícios |
-| 🎭 **Apenas Testes** | Todos os dados são para fins de teste |
-
----
-
-## � Credenciais de Teste
-
-Todos os usuários criados usam senhas de exemplo:
-
-| Tipo | Padrão |
-|------|--------|
-| Admin | `Admin@123` |
-| Coordenador | `Coord@123` |
-| Professor | `Prof@123` |
-| Responsável | `Resp@123` |
-
-**⚠️ NUNCA use estas senhas em produção!**
-
-## 📚 Documentação Adicional
-
-Para mais informações sobre o Prisma e seeds:
-- [Prisma Seeding Guide](https://www.prisma.io/docs/guides/database/seed-database)
-- [Documentação Prisma Client](https://www.prisma.io/docs/concepts/components/prisma-client)
+- [Prisma Seeding](https://www.prisma.io/docs/guides/database/seed-database)
+- [BNCC - Base Nacional Comum Curricular](http://basenacionalcomum.mec.gov.br/)
+- [Documentação do Sistema](../../Docs/ARQUITETURA_BACKEND.md)
