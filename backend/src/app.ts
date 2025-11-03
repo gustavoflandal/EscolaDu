@@ -17,6 +17,7 @@ import disciplinaRoutes from './routes/disciplina.routes';
 import programaEnsinoRoutes from './routes/programa-ensino.routes';
 import objetivoAprendizagemRoutes from './routes/objetivo-aprendizagem.routes';
 import cadastrosRoutes from './routes/cadastros.routes';
+import frequenciaRoutes from './routes/frequencia.routes';
 
 export function createApp(): Application {
   const app = express();
@@ -57,7 +58,9 @@ export function createApp(): Application {
   app.use('/api/v1/programas-ensino', programaEnsinoRoutes);
   app.use('/api/v1/objetivos-aprendizagem', objetivoAprendizagemRoutes);
   app.use('/api/v1/cadastros', cadastrosRoutes);
+  app.use('/api/v1/frequencia', frequenciaRoutes);
 
+  // Rota 404
   // Rota 404
   app.use((req, res) => {
     res.status(404).json({

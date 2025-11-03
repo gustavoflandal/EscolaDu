@@ -71,14 +71,52 @@ const router = createRouter({
         },
         {
           path: '/frequencia',
-          name: 'frequencia',
-          component: () => import('@/views/frequencia/FrequenciaView.vue'),
-          meta: { module: 'frequencia' }
+          component: () => import('@/views/frequencia/FrequenciaLayout.vue'),
+          meta: { module: 'frequencia' },
+          children: [
+            {
+              path: '',
+              redirect: '/frequencia/aulas'
+            },
+            {
+              path: 'aulas',
+              name: 'frequencia-aulas',
+              component: () => import('@/views/frequencia/AulasListView.vue')
+            },
+            {
+              path: 'relatorio',
+              name: 'frequencia-relatorio',
+              component: () => import('@/views/frequencia/FrequenciaReportView.vue')
+            },
+            {
+              path: 'justificativas',
+              name: 'frequencia-justificativas',
+              component: () => import('@/views/frequencia/JustificativasListView.vue')
+            }
+          ]
         },
         {
           path: '/objetivos',
           name: 'objetivos',
           component: () => import('@/views/objetivos/ObjetivosView.vue'),
+          meta: { module: 'objetivos' }
+        },
+        {
+          path: '/objetivos/avaliar',
+          name: 'objetivos-avaliar',
+          component: () => import('@/views/objetivos/AvaliacaoTurmaView.vue'),
+          meta: { module: 'objetivos' }
+        },
+        {
+          path: '/objetivos/mapa',
+          name: 'objetivos-mapa',
+          component: () => import('@/views/objetivos/MapaProficienciaView.vue'),
+          meta: { module: 'objetivos' }
+        },
+        {
+          path: '/objetivos/longitudinal',
+          name: 'objetivos-longitudinal',
+          component: () => import('@/views/objetivos/AcompanhamentoLongitudinalView.vue'),
           meta: { module: 'objetivos' }
         },
         {
@@ -90,7 +128,12 @@ const router = createRouter({
         {
           path: '/perfil',
           name: 'perfil',
-          component: () => import('@/views/auth/ProfileView.vue')
+          component: () => import('@/views/PerfilView.vue')
+        },
+        {
+          path: '/configuracoes',
+          name: 'configuracoes',
+          component: () => import('@/views/ConfiguracoesView.vue')
         },
         // Rotas de Usuários
         {

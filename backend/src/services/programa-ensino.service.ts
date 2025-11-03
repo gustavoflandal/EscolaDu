@@ -33,7 +33,7 @@ export class ProgramaEnsinoService {
         nome: data.nome,
         descricao: data.descricao || null,
         disciplinaId: data.disciplinaId,
-        serie: data.serie,
+        serieId: data.serie,
         periodo: data.periodo || null,
         anoLetivo: data.anoLetivo,
         cargaHoraria: data.cargaHoraria || null,
@@ -46,6 +46,13 @@ export class ProgramaEnsinoService {
             codigo: true,
             nome: true,
             areaConhecimento: true,
+          },
+        },
+        serie: {
+          select: {
+            id: true,
+            codigo: true,
+            nome: true,
           },
         },
         _count: {
@@ -93,7 +100,15 @@ export class ProgramaEnsinoService {
     }
 
     if (serie) {
-      where.serie = serie;
+      // Aceita tanto o ID (UUID) quanto o código da série
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(serie);
+      if (isUUID) {
+        where.serieId = serie;
+      } else {
+        where.serie = {
+          codigo: serie
+        };
+      }
     }
 
     if (periodo) {
@@ -116,16 +131,35 @@ export class ProgramaEnsinoService {
         take: limit,
         orderBy: [
           { anoLetivo: 'desc' },
-          { serie: 'asc' },
+          { serie: { ordem: 'asc' } },
           { periodo: 'asc' },
         ],
-        include: {
+        select: {
+          id: true,
+          codigo: true,
+          nome: true,
+          descricao: true,
+          disciplinaId: true,
+          serieId: true,
+          periodo: true,
+          anoLetivo: true,
+          cargaHoraria: true,
+          observacoes: true,
+          active: true,
+          createdAt: true,
           disciplina: {
             select: {
               id: true,
               codigo: true,
               nome: true,
               areaConhecimento: true,
+            },
+          },
+          serie: {
+            select: {
+              id: true,
+              codigo: true,
+              nome: true,
             },
           },
           _count: {
@@ -166,6 +200,13 @@ export class ProgramaEnsinoService {
             descricao: true,
           },
         },
+        serie: {
+          select: {
+            id: true,
+            codigo: true,
+            nome: true,
+          },
+        },
         objetivos: {
           where: { active: true },
           orderBy: { ordem: 'asc' },
@@ -204,6 +245,13 @@ export class ProgramaEnsinoService {
       where: { codigo },
       include: {
         disciplina: true,
+        serie: {
+          select: {
+            id: true,
+            codigo: true,
+            nome: true,
+          },
+        },
         _count: {
           select: {
             objetivos: true,
@@ -258,7 +306,7 @@ export class ProgramaEnsinoService {
         ...(data.nome && { nome: data.nome }),
         ...(data.descricao !== undefined && { descricao: data.descricao }),
         ...(data.disciplinaId && { disciplinaId: data.disciplinaId }),
-        ...(data.serie && { serie: data.serie }),
+        ...(data.serie && { serieId: data.serie }),
         ...(data.periodo !== undefined && { periodo: data.periodo }),
         ...(data.anoLetivo && { anoLetivo: data.anoLetivo }),
         ...(data.cargaHoraria !== undefined && { cargaHoraria: data.cargaHoraria }),
@@ -387,9 +435,17 @@ export class ProgramaEnsinoService {
    */
   async getSeries() {
     const series = await prisma.programaEnsino.findMany({
-      select: { serie: true },
-      distinct: ['serie'],
-      orderBy: { serie: 'asc' },
+      select: { 
+        serie: {
+          select: {
+            id: true,
+            codigo: true,
+            nome: true,
+          },
+        },
+      },
+      distinct: ['serieId'],
+      orderBy: { serie: { ordem: 'asc' } },
     });
 
     return series.map((s) => s.serie);

@@ -94,13 +94,13 @@
                 {{ turma.nome }}
               </td>
               <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-600">
-                {{ turma.serie }}
+                {{ turma.serie?.nome || '-' }}
               </td>
               <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-600">
                 {{ formatTurno(turma.turno) }}
               </td>
               <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-600">
-                {{ turma.ano }}
+                {{ turma.anoLetivo?.ano || '-' }}
               </td>
               <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-600">
                 <span :class="turma.quantidadeAlunos >= turma.capacidadeMaxima ? 'text-red-600 font-semibold' : ''">

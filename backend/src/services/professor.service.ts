@@ -431,9 +431,19 @@ class ProfessorService {
             id: true,
             codigo: true,
             nome: true,
-            serie: true,
             turno: true,
-            sala: true,
+            sala: {
+              select: {
+                nome: true
+              }
+            },
+            serie: {
+              select: {
+                id: true,
+                nome: true,
+                codigo: true
+              }
+            },
             anoLetivo: {
               select: {
                 ano: true,

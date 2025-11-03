@@ -93,6 +93,19 @@ class TurmaService {
               status: true,
             },
           },
+          serie: {
+            select: {
+              id: true,
+              codigo: true,
+              nome: true,
+            },
+          },
+          sala: {
+            select: {
+              nome: true,
+              capacidade: true,
+            },
+          },
           professorRegente: {
             select: {
               id: true,
@@ -167,6 +180,19 @@ class TurmaService {
             dataInicio: true,
             dataFim: true,
             status: true,
+          },
+        },
+        serie: {
+          select: {
+            id: true,
+            codigo: true,
+            nome: true,
+          },
+        },
+        sala: {
+          select: {
+            nome: true,
+            capacidade: true,
           },
         },
         professorRegente: {

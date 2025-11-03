@@ -7,11 +7,8 @@
           <div class="flex items-center">
             <img src="/logo.png" alt="SGE - Sistema de Gestão Escolar" class="h-12 md:h-16 lg:h-20 object-contain" />
           </div>
-          <div class="flex items-center space-x-4">
-            <span class="text-sm text-gray-700 font-medium">{{ authStore.user?.name }}</span>
-            <button @click="handleLogout" class="btn btn-secondary">
-              Sair
-            </button>
+          <div class="flex items-center">
+            <UserMenu />
           </div>
         </div>
       </div>
@@ -154,19 +151,11 @@
 </template>
 
 <script setup lang="ts">
-import { RouterLink, RouterView, useRouter } from 'vue-router'
+import { RouterLink, RouterView } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { usePermissions } from '@/composables/usePermissions'
-import { useToast } from 'vue-toastification'
+import UserMenu from '@/components/UserMenu.vue'
 
-const router = useRouter()
 const authStore = useAuthStore()
-const toast = useToast()
 const { canAccessModule } = usePermissions()
-
-function handleLogout() {
-  authStore.logout()
-  toast.success('Logout realizado com sucesso!')
-  router.push('/login')
-}
 </script>

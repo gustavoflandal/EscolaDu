@@ -313,7 +313,7 @@ async function seedPermissions() {
 async function seedRoles(permissions: Array<{ id: string; resource: string; action: string }>) {
   console.log('🌱 Iniciando seed de perfis...\n');
 
-  for (const [roleKey, roleData] of Object.entries(ROLES)) {
+  for (const [_roleKey, roleData] of Object.entries(ROLES)) {
     console.log(`👥 Criando perfil: ${roleData.name}`);
 
     // Criar ou atualizar o perfil

@@ -104,10 +104,6 @@ export const listObjetivosSchema = z.object({
     search: z
       .string()
       .optional(),
-    active: z
-      .string()
-      .transform((val) => val === 'true')
-      .optional(),
     page: z
       .string()
       .transform((val) => parseInt(val, 10))
@@ -116,7 +112,7 @@ export const listObjetivosSchema = z.object({
     limit: z
       .string()
       .transform((val) => parseInt(val, 10))
-      .refine((val) => val > 0 && val <= 100, 'Limite deve estar entre 1 e 100')
+      .refine((val) => val > 0 && val <= 1000, 'Limite deve estar entre 1 e 1000')
       .optional(),
   }).optional(),
 });
