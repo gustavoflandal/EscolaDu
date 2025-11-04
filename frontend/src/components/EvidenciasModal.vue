@@ -55,7 +55,7 @@
                           :key="aval.id"
                           :value="aval.id"
                         >
-                          {{ aval.objetivo.codigo }} - {{ aval.objetivo.descricao.substring(0, 50) }}...
+                          {{ aval.objetivo.codigoBNCC }} - {{ aval.objetivo.descricao.substring(0, 50) }}...
                         </option>
                       </select>
                     </div>
@@ -118,7 +118,7 @@
                   <div class="flex items-start justify-between mb-3 pb-3 border-b border-gray-200">
                     <div>
                       <p class="text-sm font-semibold text-gray-900">
-                        {{ grupo.objetivo.codigo }} - {{ grupo.objetivo.descricao }}
+                        {{ grupo.objetivo.codigoBNCC }} - {{ grupo.objetivo.descricao }}
                       </p>
                       <p class="text-xs text-gray-600 mt-1">
                         Status: <span :class="getStatusClass(grupo.avaliacao.status)">

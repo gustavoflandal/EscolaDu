@@ -9,7 +9,7 @@ export type TipoEvidencia = 'FOTO' | 'VIDEO' | 'DOCUMENTO' | 'TEXTO' | 'ATIVIDAD
 
 export interface ObjetivoAprendizagem {
   id: string;
-  codigo: string;
+  codigoBNCC: string;
   descricao: string;
   pontuacaoMeta?: number;
   ordem: number;

@@ -174,7 +174,7 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                       <tr v-for="aval in anoLetivo.avaliacoes" :key="aval.id" class="text-sm">
                         <td class="px-4 py-2">
-                          {{ aval.objetivo.codigo }} - {{ aval.objetivo.descricao }}
+                          {{ aval.objetivo.codigoBNCC }} - {{ aval.objetivo.descricao }}
                         </td>
                         <td class="px-4 py-2 text-center">
                           <span :class="getStatusBadgeClass(aval.status)">

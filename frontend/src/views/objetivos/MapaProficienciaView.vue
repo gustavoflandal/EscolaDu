@@ -135,7 +135,7 @@
             <tbody class="bg-white divide-y divide-gray-200">
               <tr v-for="objetivo in mapa.objetivos" :key="objetivo.id" class="hover:bg-gray-50">
                 <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {{ objetivo.codigo }}
+                  {{ objetivo.codigoBNCC }}
                 </td>
                 <td class="px-6 py-3 text-sm text-gray-900">
                   {{ objetivo.descricao }}

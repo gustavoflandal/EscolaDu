@@ -63,21 +63,36 @@
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50 sticky top-0 z-10">
             <tr>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase sticky left-0 bg-gray-50 border-r border-gray-200">
-                Aluno
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider sticky left-0 bg-gray-50 border-r border-gray-300 shadow-sm">
+                <div class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                  </svg>
+                  <span>Aluno</span>
+                </div>
               </th>
               <th
                 v-for="objetivo in objetivos"
                 :key="objetivo.id"
-                class="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase border-r border-gray-100"
-                style="min-width: 80px; max-width: 120px;"
+                class="px-3 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-100"
+                style="min-width: 100px; max-width: 140px;"
               >
-                <div class="truncate" :title="objetivo.descricao">
-                  {{ objetivo.codigo }}
+                <div class="flex flex-col items-center gap-1">
+                  <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  <span class="truncate w-full" :title="objetivo.descricao">
+                    {{ objetivo.codigoBNCC }}
+                  </span>
                 </div>
               </th>
-              <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase bg-gray-100">
-                Ações
+              <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider bg-gray-50 border-l border-gray-300">
+                <div class="flex items-center justify-center gap-2">
+                  <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                  </svg>
+                  <span>Ações</span>
+                </div>
               </th>
             </tr>
           </thead>
@@ -101,26 +116,29 @@
               >
                 <select
                   v-model="avaliacoes[`${aluno.id}-${objetivo.id}`]"
-                  class="w-full text-xs rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                  class="w-full text-xs rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500 py-1.5 font-medium"
                   :class="getStatusClass(avaliacoes[`${aluno.id}-${objetivo.id}`])"
                   @change="markAsModified(aluno.id, objetivo.id)"
                 >
-                  <option value="">-</option>
-                  <option value="A">A</option>
-                  <option value="D">D</option>
-                  <option value="N">N</option>
-                  <option value="NA">NA</option>
+                  <option value="">Selecione...</option>
+                  <option value="A">&#10003; Atingido</option>
+                  <option value="D">&#9889; Em Desenvolvimento</option>
+                  <option value="N">&#10007; Não Atingido</option>
+                  <option value="NA">&#9675; Não Avaliado</option>
                 </select>
               </td>
 
-              <!-- Botão de Evidências (desabilitado temporariamente) -->
-              <td class="px-4 py-2 text-center bg-gray-50">
+              <!-- Botão de Evidências -->
+              <td class="px-4 py-2 text-center bg-gray-50 border-l border-gray-300">
                 <button
                   disabled
-                  class="text-gray-400 cursor-not-allowed text-xs"
+                  class="inline-flex items-center gap-1 px-2 py-1 text-xs text-gray-400 bg-gray-100 rounded cursor-not-allowed"
                   title="Em breve: Gerenciar evidências"
                 >
-                  📎
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
+                  </svg>
+                  <span>Evidências</span>
                 </button>
               </td>
             </tr>
