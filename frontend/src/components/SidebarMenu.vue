@@ -16,8 +16,8 @@
             ? 'bg-primary-50 text-primary-600 border-l-4 border-primary-600' 
             : 'text-gray-700 hover:bg-gray-50'"
         >
-          <svg class="mr-3 h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 11l3-3m0 0l3 3m-3-3v6" />
+          <svg class="mr-3 h-5 w-5 flex-shrink-0 text-primary-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M13 21v-2H3v2a2 2 0 002 2h8zm0-6v-2H3v2h10zM3 9h10V7H3v2zm18-4h-4V3h-2v2h-4v2h4v4h2V7h4V5z"/>
           </svg>
           Dashboard
         </RouterLink>
@@ -31,8 +31,8 @@
             ? 'bg-primary-50 text-primary-600 border-l-4 border-primary-600' 
             : 'text-gray-700 hover:bg-gray-50'"
         >
-          <svg class="mr-3 h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 12H9m6 0h.01M9 12h.01M12 12h.01M12 12h.01M6 8h.01M18 8h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <svg class="mr-3 h-5 w-5 flex-shrink-0 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
           </svg>
           Alunos
         </RouterLink>
@@ -46,8 +46,8 @@
             ? 'bg-primary-50 text-primary-600 border-l-4 border-primary-600' 
             : 'text-gray-700 hover:bg-gray-50'"
         >
-          <svg class="mr-3 h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM9 9H5a4 4 0 014-4h0a4 4 0 014 4m0 0v3m0 0v3m0-3h3m-3 0h-3" />
+          <svg class="mr-3 h-5 w-5 flex-shrink-0 text-purple-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.89 1.97 1.74 1.97 2.95V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
           </svg>
           Responsáveis
         </RouterLink>
@@ -61,8 +61,8 @@
             ? 'bg-primary-50 text-primary-600 border-l-4 border-primary-600' 
             : 'text-gray-700 hover:bg-gray-50'"
         >
-          <svg class="mr-3 h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          <svg class="mr-3 h-5 w-5 flex-shrink-0 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
           </svg>
           Professores
         </RouterLink>
@@ -76,8 +76,8 @@
             ? 'bg-primary-50 text-primary-600 border-l-4 border-primary-600' 
             : 'text-gray-700 hover:bg-gray-50'"
         >
-          <svg class="mr-3 h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          <svg class="mr-3 h-5 w-5 flex-shrink-0 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>
           </svg>
           Agenda
         </RouterLink>
@@ -91,8 +91,8 @@
             ? 'bg-primary-50 text-primary-600 border-l-4 border-primary-600' 
             : 'text-gray-700 hover:bg-gray-50'"
         >
-          <svg class="mr-3 h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+          <svg class="mr-3 h-5 w-5 flex-shrink-0 text-green-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm4 8H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V9h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2z"/>
           </svg>
           Turmas
         </RouterLink>
@@ -106,8 +106,8 @@
             ? 'bg-primary-50 text-primary-600 border-l-4 border-primary-600' 
             : 'text-gray-700 hover:bg-gray-50'"
         >
-          <svg class="mr-3 h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C6.228 6.228 2 7.486 2 12s4.228 5.772 10 5.772c5.771 0 10-1.258 10-5.772 0-4.515-4.229-5.772-10-5.772z" />
+          <svg class="mr-3 h-5 w-5 flex-shrink-0 text-indigo-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
           </svg>
           Disciplinas
         </RouterLink>
@@ -128,8 +128,8 @@
             ? 'bg-primary-50 text-primary-600 border-l-4 border-primary-600' 
             : 'text-gray-700 hover:bg-gray-50'"
         >
-          <svg class="mr-3 h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+          <svg class="mr-3 h-5 w-5 flex-shrink-0 text-teal-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
           </svg>
           Frequência
         </RouterLink>
@@ -143,8 +143,8 @@
             ? 'bg-primary-50 text-primary-600 border-l-4 border-primary-600' 
             : 'text-gray-700 hover:bg-gray-50'"
         >
-          <svg class="mr-3 h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          <svg class="mr-3 h-5 w-5 flex-shrink-0 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
           </svg>
           Objetivos
         </RouterLink>
@@ -158,8 +158,8 @@
             ? 'bg-primary-50 text-primary-600 border-l-4 border-primary-600' 
             : 'text-gray-700 hover:bg-gray-50'"
         >
-          <svg class="mr-3 h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          <svg class="mr-3 h-5 w-5 flex-shrink-0 text-pink-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/>
           </svg>
           Relatórios
         </RouterLink>
@@ -173,8 +173,8 @@
             ? 'bg-primary-50 text-primary-600 border-l-4 border-primary-600' 
             : 'text-gray-700 hover:bg-gray-50'"
         >
-          <svg class="mr-3 h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+          <svg class="mr-3 h-5 w-5 flex-shrink-0 text-cyan-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
           </svg>
           Cadastros Básicos
         </RouterLink>
@@ -195,8 +195,8 @@
             ? 'bg-primary-50 text-primary-600 border-l-4 border-primary-600' 
             : 'text-gray-700 hover:bg-gray-50'"
         >
-          <svg class="mr-3 h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 12H9m4.5 5.5h-3m3 0h-3M18 20a6 6 0 11-12 0 6 6 0 0112 0z" />
+          <svg class="mr-3 h-5 w-5 flex-shrink-0 text-violet-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
           </svg>
           Usuários
         </RouterLink>
@@ -210,8 +210,8 @@
             ? 'bg-primary-50 text-primary-600 border-l-4 border-primary-600' 
             : 'text-gray-700 hover:bg-gray-50'"
         >
-          <svg class="mr-3 h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <svg class="mr-3 h-5 w-5 flex-shrink-0 text-rose-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M10.5 1.5H3.75A2.25 2.25 0 001.5 3.75v16.5A2.25 2.25 0 003.75 22.5h16.5a2.25 2.25 0 002.25-2.25V10.5M22.5 1.5l-9 9M22.5 1.5h-6m6 0v6"/>
           </svg>
           Perfis
         </RouterLink>
