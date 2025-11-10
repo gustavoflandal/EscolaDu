@@ -1,161 +1,34 @@
 <template>
-  <div class="min-h-screen bg-gray-100">
+  <div class="min-h-screen bg-gray-100 flex flex-col">
     <!-- Header -->
-    <header class="bg-white shadow-sm">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-20">
-          <div class="flex items-center">
-            <img src="/logo.png" alt="SGE - Sistema de Gestão Escolar" class="h-12 md:h-16 lg:h-20 object-contain" />
-          </div>
-          <div class="flex items-center">
-            <UserMenu />
-          </div>
+    <header class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+      <div class="h-20 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+        <div class="flex items-center">
+          <img src="/logo.png" alt="SGE - Sistema de Gestão Escolar" class="h-12 md:h-16 lg:h-20 object-contain" />
+        </div>
+        <div class="flex items-center">
+          <UserMenu />
         </div>
       </div>
     </header>
 
-    <!-- Menu de Navegação -->
-    <nav class="bg-white border-b border-gray-200 shadow-sm">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex space-x-8 h-12">
-          <RouterLink
-            v-if="canAccessModule('dashboard')"
-            to="/"
-            class="border-transparent text-gray-600 hover:border-primary-400 hover:text-gray-900 inline-flex items-center px-1 border-b-2 text-sm font-medium transition-colors"
-            active-class="border-primary-500 text-primary-600"
-          >
-            Dashboard
-          </RouterLink>
-          
-          <RouterLink
-            v-if="canAccessModule('alunos')"
-            to="/alunos"
-            class="border-transparent text-gray-600 hover:border-primary-400 hover:text-gray-900 inline-flex items-center px-1 border-b-2 text-sm font-medium transition-colors"
-            active-class="border-primary-500 text-primary-600"
-          >
-            Alunos
-          </RouterLink>
-          
-          <RouterLink
-            v-if="canAccessModule('responsaveis')"
-            to="/responsaveis"
-            class="border-transparent text-gray-600 hover:border-primary-400 hover:text-gray-900 inline-flex items-center px-1 border-b-2 text-sm font-medium transition-colors"
-            active-class="border-primary-500 text-primary-600"
-          >
-            Responsáveis
-          </RouterLink>
-          
-          <RouterLink
-            v-if="canAccessModule('professores')"
-            to="/professores"
-            class="border-transparent text-gray-600 hover:border-primary-400 hover:text-gray-900 inline-flex items-center px-1 border-b-2 text-sm font-medium transition-colors"
-            active-class="border-primary-500 text-primary-600"
-          >
-            Professores
-          </RouterLink>
+    <!-- Container Principal com Sidebar -->
+    <div class="flex flex-1 pt-20">
+      <!-- Sidebar -->
+      <SidebarMenu />
 
-          <RouterLink
-            v-if="canAccessModule('professores')"
-            to="/agenda-professores"
-            class="border-transparent text-gray-600 hover:border-primary-400 hover:text-gray-900 inline-flex items-center px-1 border-b-2 text-sm font-medium transition-colors"
-            active-class="border-primary-500 text-primary-600"
-          >
-            Agenda
-          </RouterLink>
-          
-          <RouterLink
-            v-if="canAccessModule('turmas')"
-            to="/turmas"
-            class="border-transparent text-gray-600 hover:border-primary-400 hover:text-gray-900 inline-flex items-center px-1 border-b-2 text-sm font-medium transition-colors"
-            active-class="border-primary-500 text-primary-600"
-          >
-            Turmas
-          </RouterLink>
-          
-          <RouterLink
-            v-if="canAccessModule('disciplinas')"
-            to="/disciplinas"
-            class="border-transparent text-gray-600 hover:border-primary-400 hover:text-gray-900 inline-flex items-center px-1 border-b-2 text-sm font-medium transition-colors"
-            active-class="border-primary-500 text-primary-600"
-          >
-            Disciplinas
-          </RouterLink>
-
-          <RouterLink
-            v-if="canAccessModule('cadastros')"
-            to="/cadastros"
-            class="border-transparent text-gray-600 hover:border-primary-400 hover:text-gray-900 inline-flex items-center px-1 border-b-2 text-sm font-medium transition-colors"
-            active-class="border-primary-500 text-primary-600"
-          >
-            Cadastros
-          </RouterLink>
-          
-          <RouterLink
-            v-if="canAccessModule('frequencia')"
-            to="/frequencia"
-            class="border-transparent text-gray-600 hover:border-primary-400 hover:text-gray-900 inline-flex items-center px-1 border-b-2 text-sm font-medium transition-colors"
-            active-class="border-primary-500 text-primary-600"
-          >
-            Frequência
-          </RouterLink>
-          
-          <RouterLink
-            v-if="canAccessModule('objetivos')"
-            to="/objetivos"
-            class="border-transparent text-gray-600 hover:border-primary-400 hover:text-gray-900 inline-flex items-center px-1 border-b-2 text-sm font-medium transition-colors"
-            active-class="border-primary-500 text-primary-600"
-          >
-            Objetivos
-          </RouterLink>
-          
-          <RouterLink
-            v-if="canAccessModule('relatorios')"
-            to="/relatorios"
-            class="border-transparent text-gray-600 hover:border-primary-400 hover:text-gray-900 inline-flex items-center px-1 border-b-2 text-sm font-medium transition-colors"
-            active-class="border-primary-500 text-primary-600"
-          >
-            Relatórios
-          </RouterLink>
-          
-          <!-- Seção Administrativa - visível apenas para administradores -->
-          <div class="flex-1"></div>
-          
-          <RouterLink
-            v-if="canAccessModule('usuarios')"
-            to="/usuarios"
-            class="border-transparent text-gray-600 hover:border-primary-400 hover:text-gray-900 inline-flex items-center px-1 border-b-2 text-sm font-medium transition-colors"
-            active-class="border-primary-500 text-primary-600"
-          >
-            Usuários
-          </RouterLink>
-          
-          <RouterLink
-            v-if="canAccessModule('perfis')"
-            to="/perfis"
-            class="border-transparent text-gray-600 hover:border-primary-400 hover:text-gray-900 inline-flex items-center px-1 border-b-2 text-sm font-medium transition-colors"
-            active-class="border-primary-500 text-primary-600"
-          >
-            Perfis
-          </RouterLink>
+      <!-- Conteúdo Principal -->
+      <main class="flex-1 ml-64 p-6 overflow-auto">
+        <div class="max-w-7xl mx-auto">
+          <RouterView />
         </div>
-      </div>
-    </nav>
-
-    <!-- Page Content -->
-    <main class="py-10">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <RouterView />
-      </div>
-    </main>
+      </main>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
-import { usePermissions } from '@/composables/usePermissions'
+import { RouterView } from 'vue-router'
 import UserMenu from '@/components/UserMenu.vue'
-
-const authStore = useAuthStore()
-const { canAccessModule } = usePermissions()
+import SidebarMenu from '@/components/SidebarMenu.vue'
 </script>
