@@ -93,14 +93,14 @@ export class ObjetivoAprendizagemService {
   /**
    * Listar objetivos de aprendizagem com filtros e paginação
    */
-  async list(query: ListObjetivosQuery) {
+  async list(query?: ListObjetivosQuery) {
     const {
       page = 1,
       limit = 50,
       search,
       programaEnsinoId,
       active,
-    } = query;
+    } = query || {};
 
     const skip = (page - 1) * limit;
 

@@ -196,16 +196,6 @@ export class DisciplinaController {
     }
   }
 
-  async getTurmas(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const { id } = req.params;
-      const turmas = await disciplinaService.getTurmasVinculadas(id);
-      successResponse(res, turmas, 'Turmas vinculadas listadas com sucesso');
-    } catch (error) {
-      next(error);
-    }
-  }
-
   async desvincularTurma(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id, turmaId } = req.params;

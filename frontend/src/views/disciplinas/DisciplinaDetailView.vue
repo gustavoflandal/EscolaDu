@@ -138,7 +138,7 @@
                   <p class="line-clamp-2" :title="programa.nome">{{ programa.nome }}</p>
                 </td>
                 <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-600">
-                  {{ programa.serie }}
+                  {{ typeof programa.serie === 'object' ? programa.serie.nome : programa.serie }}
                 </td>
                 <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-600">
                   {{ programa.periodo || '-' }}

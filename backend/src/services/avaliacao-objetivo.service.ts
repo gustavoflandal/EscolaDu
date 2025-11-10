@@ -459,7 +459,7 @@ export class AvaliacaoObjetivoService {
         turma: {
           select: {
             nome: true,
-            ano: true
+            anoLetivoId: true
           }
         },
         evidencias: {
@@ -477,7 +477,7 @@ export class AvaliacaoObjetivoService {
 
     // Agrupa por período (ano letivo)
     const porAno = avaliacoes.reduce((acc, av) => {
-      const ano = av.turma.ano;
+      const ano = av.turma.anoLetivoId;
       if (!acc[ano]) {
         acc[ano] = {
           ano,
@@ -497,7 +497,7 @@ export class AvaliacaoObjetivoService {
       if (av.status === 'N') acc[ano].estatisticas.naoAtingidos++;
       
       return acc;
-    }, {} as Record<number, any>);
+    }, {} as Record<string, any>);
 
     // Linha do tempo
     const timeline = avaliacoes.map(av => ({
@@ -507,7 +507,7 @@ export class AvaliacaoObjetivoService {
       descricao: av.objetivo.descricao,
       status: av.status,
       turma: av.turma.nome,
-      ano: av.turma.ano,
+      ano: av.turma.anoLetivoId,
       evidencias: av.evidencias.length
     }));
 

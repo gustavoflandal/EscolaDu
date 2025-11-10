@@ -471,7 +471,7 @@ export class FrequenciaService {
       turma: {
         id: turma.id,
         nome: turma.nome,
-        serie: turma.serie
+        serie: turma.serieId
       },
       periodo: {
         dataInicio,

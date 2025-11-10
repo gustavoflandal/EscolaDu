@@ -31,7 +31,8 @@ export class SalaController {
       });
 
       if (!sala) {
-        return successResponse(res, null, 'Sala não encontrada', 404);
+        successResponse(res, null, 'Sala não encontrada', 404);
+        return;
       }
 
       successResponse(res, sala, 'Sala encontrada');

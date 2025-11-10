@@ -11,7 +11,7 @@
       <div class="flex items-center justify-between mb-8">
         <div>
           <h1 class="text-3xl font-bold text-gray-900">{{ turma.nome }}</h1>
-          <p class="text-gray-600 mt-1">{{ turma.codigo }} • {{ turma.serie }} • {{ formatTurno(turma.turno) }}</p>
+          <p class="text-gray-600 mt-1">{{ turma.codigo }} • {{ typeof turma.serie === 'object' ? turma.serie.nome : turma.serie }} • {{ formatTurno(turma.turno) }}</p>
         </div>
         <button
           @click="$router.back()"

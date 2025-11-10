@@ -30,7 +30,7 @@
           >
             <option :value="null">Selecione uma turma</option>
             <option v-for="turma in turmasDoAluno" :key="turma.id" :value="turma.id">
-              {{ turma.nome }} - {{ turma.serie }}
+              {{ turma.nome }} - {{ typeof turma.serie === 'object' ? turma.serie.nome : turma.serie }}
             </option>
           </select>
         </div>

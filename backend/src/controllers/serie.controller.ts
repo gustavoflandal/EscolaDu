@@ -31,7 +31,8 @@ export class SerieController {
       });
 
       if (!serie) {
-        return successResponse(res, null, 'Série não encontrada', 404);
+        successResponse(res, null, 'Série não encontrada', 404);
+        return;
       }
 
       successResponse(res, serie, 'Série encontrada');

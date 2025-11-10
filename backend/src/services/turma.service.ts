@@ -58,9 +58,9 @@ class TurmaService {
     if (search) {
       where.OR = [
         { nome: { contains: search } },
-        { sala: { contains: search } },
+        { sala: { codigo: { contains: search } } },
         { codigo: { contains: search } },
-        { serie: { contains: search } },
+        { serie: { nome: { contains: search } } },
       ];
     }
 
@@ -313,14 +313,28 @@ class TurmaService {
         codigo: data.codigo,
         nome: data.nome,
         anoLetivoId: data.anoLetivoId,
-        serie: data.serie,
+        serieId: data.serie,
         turno: data.turno,
         capacidadeMaxima: data.capacidadeMaxima || 30,
-        sala: data.sala,
+        salaId: data.sala,
         professorRegenteId: data.professorRegenteId,
         active: true,
       },
       include: {
+        serie: {
+          select: {
+            id: true,
+            nome: true,
+            ordem: true
+          }
+        },
+        sala: {
+          select: {
+            id: true,
+            codigo: true,
+            capacidade: true
+          }
+        },
         anoLetivo: {
           select: {
             ano: true,
@@ -421,14 +435,28 @@ class TurmaService {
         codigo: data.codigo,
         nome: data.nome,
         anoLetivoId: data.anoLetivoId,
-        serie: data.serie,
+        serieId: data.serie,
         turno: data.turno,
         capacidadeMaxima: data.capacidadeMaxima,
-        sala: data.sala,
+        salaId: data.sala,
         professorRegenteId: data.professorRegenteId,
         active: data.active,
       },
       include: {
+        serie: {
+          select: {
+            id: true,
+            nome: true,
+            ordem: true
+          }
+        },
+        sala: {
+          select: {
+            id: true,
+            codigo: true,
+            capacidade: true
+          }
+        },
         anoLetivo: {
           select: {
             ano: true,

@@ -148,15 +148,16 @@ export class AvaliacaoObjetivoController {
   /**
    * Obter estatísticas de uma turma
    */
-  async getEstatisticasTurma(req: Request, res: Response) {
+  async getEstatisticasTurma(req: Request, res: Response): Promise<void> {
     try {
       const { turmaId } = req.params;
       const { programaEnsinoId } = req.query;
 
       if (!programaEnsinoId) {
-        return res.status(400).json({ 
+        res.status(400).json({ 
           message: 'programaEnsinoId é obrigatório' 
         });
+        return;
       }
 
       const stats = await avaliacaoObjetivoService.getEstatisticasTurma(

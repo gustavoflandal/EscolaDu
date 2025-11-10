@@ -271,7 +271,7 @@ export class EvidenciaAprendizagemService {
             turma: {
               select: {
                 nome: true,
-                ano: true
+                anoLetivoId: true
               }
             }
           }

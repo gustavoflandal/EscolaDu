@@ -37,7 +37,7 @@
             </div>
             <div>
               <label class="text-xs font-medium text-blue-700">Série</label>
-              <p class="text-gray-900">{{ programa.serie }}</p>
+              <p class="text-gray-900">{{ typeof programa.serie === 'object' ? programa.serie.nome : programa.serie }}</p>
             </div>
             <div>
               <label class="text-xs font-medium text-blue-700">Período</label>

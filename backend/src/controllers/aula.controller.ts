@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { aulaService } from '../services/aula.service';
 import { successResponse, errorResponse } from '../utils/response.util';
 import { logger } from '../config/logger';
-import { AuthRequest } from '../middleware/auth.middleware';
 
 export class AulaController {
   /**

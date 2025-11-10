@@ -21,7 +21,8 @@ export class ObjetivoAprendizagemController {
    */
   async list(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const result = await objetivoAprendizagemService.list(req.query as unknown as ListObjetivosQuery);
+      const query = req.query as unknown as ListObjetivosQuery | undefined;
+      const result = await objetivoAprendizagemService.list(query);
       successResponse(res, result.data, 'Objetivos listados com sucesso', 200, result.pagination);
     } catch (error) {
       next(error);

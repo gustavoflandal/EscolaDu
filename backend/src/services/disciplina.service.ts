@@ -84,7 +84,7 @@ export class DisciplinaService {
             }
           },
           orderBy: [
-            { serie: 'asc' },
+            { serieId: 'asc' },
             { periodo: 'asc' }
           ]
         },
@@ -142,7 +142,7 @@ export class DisciplinaService {
       include: {
         _count: {
           select: {
-            objetivos: true,
+            programasEnsino: true,
             turmas: true
           }
         }
@@ -173,7 +173,7 @@ export class DisciplinaService {
       include: {
         _count: {
           select: {
-            objetivos: true,
+            programasEnsino: true,
             turmas: true
           }
         }
@@ -189,7 +189,7 @@ export class DisciplinaService {
         _count: {
           select: {
             turmas: true,
-            objetivos: true
+            programasEnsino: true
           }
         }
       }
@@ -204,7 +204,7 @@ export class DisciplinaService {
       throw new Error('Não é possível excluir disciplina com turmas vinculadas');
     }
 
-    if (disciplina._count.objetivos > 0) {
+    if (disciplina._count.programasEnsino > 0) {
       throw new Error('Não é possível excluir disciplina com objetivos cadastrados');
     }
 
@@ -317,12 +317,19 @@ export class DisciplinaService {
     const objetivo = await prisma.objetivoAprendizagem.findUnique({
       where: { id },
       include: {
-        disciplina: {
+        programaEnsino: {
           select: {
             id: true,
             codigo: true,
             nome: true,
-            areaConhecimento: true
+            disciplina: {
+              select: {
+                id: true,
+                codigo: true,
+                nome: true,
+                areaConhecimento: true
+              }
+            }
           }
         },
         _count: {
@@ -359,11 +366,11 @@ export class DisciplinaService {
       throw new Error('Já existe um objetivo com este código BNCC');
     }
 
+    // Criar objetivo vinculado ao programa de ensino, não diretamente à disciplina
     // @ts-ignore - Tipos serão atualizados após restart do TS Server
     return prisma.objetivoAprendizagem.create({
       data: {
-        ...data,
-        disciplinaId
+        ...data
       },
       include: {
         // @ts-ignore
@@ -409,11 +416,18 @@ export class DisciplinaService {
       where: { id },
       data,
       include: {
-        disciplina: {
+        programaEnsino: {
           select: {
             id: true,
             codigo: true,
-            nome: true
+            nome: true,
+            disciplina: {
+              select: {
+                id: true,
+                codigo: true,
+                nome: true
+              }
+            }
           }
         }
       }
@@ -447,8 +461,8 @@ export class DisciplinaService {
     // @ts-ignore - Tipos serão atualizados após restart do TS Server
     const programas = await prisma.programaEnsino.findMany({
       where: { active: true },
-      select: { serie: true },
-      distinct: ['serie']
+      select: { serieId: true },
+      distinct: ['serieId']
     });
 
     return programas.map((p: any) => p.serie).sort();

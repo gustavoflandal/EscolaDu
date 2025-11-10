@@ -3,16 +3,12 @@ import { z } from 'zod';
 /**
  * Status possíveis para avaliação de objetivo
  */
-export const statusAvaliacaoEnum = z.enum(['A', 'D', 'N', 'NA'], {
-  errorMap: () => ({ message: 'Status deve ser A (Atingido), D (Em Desenvolvimento), N (Não Atingido) ou NA (Não Avaliado)' })
-});
+export const statusAvaliacaoEnum = z.enum(['A', 'D', 'N', 'NA']).describe('Status deve ser A (Atingido), D (Em Desenvolvimento), N (Não Atingido) ou NA (Não Avaliado)');
 
 /**
  * Tipos de evidência
  */
-export const tipoEvidenciaEnum = z.enum(['FOTO', 'VIDEO', 'DOCUMENTO', 'TEXTO', 'ATIVIDADE', 'PROJETO'], {
-  errorMap: () => ({ message: 'Tipo deve ser FOTO, VIDEO, DOCUMENTO, TEXTO, ATIVIDADE ou PROJETO' })
-});
+export const tipoEvidenciaEnum = z.enum(['FOTO', 'VIDEO', 'DOCUMENTO', 'TEXTO', 'ATIVIDADE', 'PROJETO']).describe('Tipo deve ser FOTO, VIDEO, DOCUMENTO, TEXTO, ATIVIDADE ou PROJETO');
 
 /**
  * Schema para criação/atualização de avaliação de objetivo

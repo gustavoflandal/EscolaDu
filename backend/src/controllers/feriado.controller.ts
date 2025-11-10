@@ -41,7 +41,8 @@ export class FeriadoController {
       });
 
       if (!feriado) {
-        return successResponse(res, null, 'Feriado não encontrado', 404);
+        successResponse(res, null, 'Feriado não encontrado', 404);
+        return;
       }
 
       successResponse(res, feriado, 'Feriado encontrado');
