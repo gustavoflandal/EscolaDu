@@ -118,40 +118,45 @@ export const getProgramaEnsinoSchema = z.object({
 
 // Schema para listar programas de ensino com filtros
 export const listProgramasEnsinoSchema = z.object({
-  query: z.object({
-    page: z
-      .string()
-      .optional()
-      .transform((val) => (val ? parseInt(val, 10) : 1)),
-    limit: z
-      .string()
-      .optional()
-      .transform((val) => (val ? parseInt(val, 10) : 10)),
-    search: z
-      .string()
-      .optional(),
-    disciplinaId: z
-      .string()
-      .uuid('ID da disciplina inválido')
-      .optional(),
-    serie: z
-      .string()
-      .optional(),
-    periodo: z
-      .string()
-      .optional(),
-    anoLetivo: z
-      .string()
-      .optional()
-      .transform((val) => (val ? parseInt(val, 10) : undefined)),
-    active: z
-      .string()
-      .optional()
-      .transform((val) => {
-        if (val === undefined) return undefined;
-        return val === 'true';
-      }),
-  }),
+  query: z
+    .object({
+      page: z
+        .string()
+        .optional()
+        .transform((val) => (val ? parseInt(val, 10) : 1)),
+      limit: z
+        .string()
+        .optional()
+        .transform((val) => (val ? parseInt(val, 10) : 10)),
+      search: z
+        .string()
+        .optional(),
+      disciplinaId: z
+        .string()
+        .optional()
+        .refine((val) => !val || /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val), {
+          message: 'disciplinaId deve ser um UUID válido se fornecido'
+        }),
+      serie: z
+        .string()
+        .optional(),
+      periodo: z
+        .string()
+        .optional(),
+      anoLetivo: z
+        .string()
+        .optional()
+        .transform((val) => (val ? parseInt(val, 10) : undefined)),
+      active: z
+        .string()
+        .optional()
+        .transform((val) => {
+          if (val === undefined) return undefined;
+          return val === 'true';
+        }),
+    })
+    .strict()
+    .passthrough(),
 });
 
 // Schema para deletar programa de ensino

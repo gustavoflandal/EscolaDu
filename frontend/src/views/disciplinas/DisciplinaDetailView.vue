@@ -268,6 +268,12 @@ const showObjetivoModal = ref(false)
 const currentProgramaId = ref<string>('')
 const selectedObjetivo = ref<ObjetivoAprendizagem | undefined>()
 
+// Validar formato UUID
+const isValidUUID = (uuid: string): boolean => {
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+  return uuidRegex.test(uuid)
+}
+
 // Filtros de programas
 const programasFilters = ref({
   search: undefined as string | undefined,
@@ -300,13 +306,22 @@ const loadDisciplina = async () => {
 const loadProgramas = async () => {
   try {
     console.log('🔍 Loading programas for disciplinaId:', disciplinaId)
+    
+    // Validar se o disciplinaId é um UUID válido
+    if (!isValidUUID(disciplinaId)) {
+      console.warn('⚠️ Invalid disciplina ID format:', disciplinaId)
+      toast.warning('ID da disciplina inválido. Carregando página...')
+      return
+    }
+
     const response = await programasEnsinoService.getByDisciplina(disciplinaId)
     console.log('✅ Programas received:', response)
     programasOriginal.value = response
     applyFilters()
   } catch (error: any) {
     console.error('❌ Error loading programas:', error)
-    toast.error(error.response?.data?.error?.message || 'Erro ao carregar programas de ensino')
+    const errorMessage = error.response?.data?.error?.message || 'Erro ao carregar programas de ensino'
+    toast.error(errorMessage)
   }
 }
 

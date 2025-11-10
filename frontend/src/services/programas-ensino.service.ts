@@ -84,17 +84,32 @@ class ProgramasEnsinoService {
    * Buscar programas de ensino por disciplina
    */
   async getByDisciplina(disciplinaId: string): Promise<ProgramaEnsino[]> {
-    console.log('📡 API call: GET /programas-ensino?disciplinaId=', disciplinaId)
-    const response = await api.get(this.baseUrl, {
-      params: { disciplinaId, limit: 100 }
-    })
-    console.log('📡 API response:', response.data)
-    // A resposta do backend pode ser { data: [...] } ou { data: { data: [...], ... } }
-    const result = Array.isArray(response.data.data) 
-      ? response.data.data 
-      : response.data.data?.data || []
-    console.log('📡 Returning programas:', result.length, 'items')
-    return result
+    // Validar se disciplinaId é um UUID válido
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+    if (!disciplinaId || !uuidRegex.test(disciplinaId)) {
+      console.warn('⚠️ Invalid disciplinaId format:', disciplinaId)
+      return []
+    }
+
+    try {
+      console.log('📡 API call: GET /programas-ensino?disciplinaId=', disciplinaId)
+      const response = await api.get(this.baseUrl, {
+        params: { disciplinaId, limit: 100 }
+      })
+      console.log('📡 API response:', response.data)
+      // A resposta do backend pode ser { data: [...] } ou { data: { data: [...], ... } }
+      const result = Array.isArray(response.data.data) 
+        ? response.data.data 
+        : response.data.data?.data || []
+      console.log('📡 Returning programas:', result.length, 'items')
+      return result
+    } catch (error: any) {
+      console.error('❌ Error fetching programas by disciplina:', error.response?.status, error.response?.data)
+      if (error.response?.status === 400) {
+        console.error('❌ Validation error - Invalid disciplinaId or parameters:', error.response?.data?.error)
+      }
+      throw error
+    }
   }
 
   /**
